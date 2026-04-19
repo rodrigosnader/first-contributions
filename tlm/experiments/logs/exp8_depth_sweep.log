@@ -1,0 +1,70 @@
+/usr/local/lib/python3.11/dist-packages/torch/_subclasses/functional_tensor.py:307: UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:84.)
+  cpu = _conversion_method_template(device=torch.device("cpu"))
+=== tree_lm_v2_d2 ===
+model: TreeLMv2, params: 194,704
+vocab=65, seq_len=64, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.427 acc 0.345 | val BPC 2.960 acc 0.402 | 15s
+epoch   5 | train BPC 2.302 acc 0.516 | val BPC 2.640 acc 0.472 | 69s
+epoch  10 | train BPC 2.083 acc 0.553 | val BPC 2.601 acc 0.482 | 136s
+epoch  15 | train BPC 1.966 acc 0.574 | val BPC 2.646 acc 0.489 | 204s
+epoch  20 | train BPC 1.879 acc 0.591 | val BPC 2.689 acc 0.484 | 271s
+epoch  25 | train BPC 1.803 acc 0.605 | val BPC 2.768 acc 0.481 | 338s
+epoch  30 | train BPC 1.747 acc 0.616 | val BPC 2.853 acc 0.476 | 405s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+ISS: the gods will I rewently the dancuest; his then us, arm word Conuroking and thee, marry, took some more than grave? what is the day may factic.
+
+LADY GREY:
+When wilt thou live thou wnard it will 
+--- end ---
+
+=== tree_lm_v2_d3 ===
+model: TreeLMv2, params: 387,364
+vocab=65, seq_len=64, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.381 acc 0.347 | val BPC 2.929 acc 0.408 | 18s
+epoch   5 | train BPC 2.184 acc 0.538 | val BPC 2.560 acc 0.485 | 91s
+epoch  10 | train BPC 1.924 acc 0.583 | val BPC 2.579 acc 0.494 | 181s
+epoch  15 | train BPC 1.746 acc 0.616 | val BPC 2.709 acc 0.487 | 270s
+epoch  20 | train BPC 1.588 acc 0.648 | val BPC 2.908 acc 0.475 | 359s
+epoch  25 | train BPC 1.454 acc 0.676 | val BPC 3.116 acc 0.466 | 447s
+epoch  30 | train BPC 1.344 acc 0.699 | val BPC 3.319 acc 0.460 | 536s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+FRIAR LAURENCE:
+Come, I pray thee, good busined forth,
+I have devotion with me.
+I desire you to be give your mispoletitor,
+And strip and
+the best of the divil that I will not hence from thee and wilde
+--- end ---
+
+=== tree_lm_v2_d4 ===
+model: TreeLMv2, params: 772,684
+vocab=65, seq_len=64, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.435 acc 0.340 | val BPC 2.910 acc 0.408 | 21s
+epoch   5 | train BPC 2.133 acc 0.544 | val BPC 2.519 acc 0.487 | 106s
+epoch  10 | train BPC 1.826 acc 0.600 | val BPC 2.593 acc 0.490 | 211s
+epoch  15 | train BPC 1.581 acc 0.649 | val BPC 2.825 acc 0.482 | 317s
+epoch  20 | train BPC 1.357 acc 0.695 | val BPC 3.125 acc 0.469 | 422s
+epoch  25 | train BPC 1.160 acc 0.737 | val BPC 3.501 acc 0.455 | 529s
+epoch  30 | train BPC 0.991 acc 0.774 | val BPC 3.852 acc 0.451 | 633s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+KING EDWARD IV:
+The new-heal'd with a pursuivant at the gentlemen,
+A bloody brows, his cunning can core the minute to say you to visit:
+Tramrous wretched, hateful father's strue knighthood to his brot
+--- end ---
+
+
+=== SUMMARY ===
+depth        params    val_bpc    val_acc     time
+d2          194,704      2.601      0.489     406s
+d3          387,364      2.560      0.494     537s
+d4          772,684      2.519      0.490     634s
