@@ -1,0 +1,46 @@
+/usr/local/lib/python3.11/dist-packages/torch/_subclasses/functional_tensor.py:307: UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:84.)
+  cpu = _conversion_method_template(device=torch.device("cpu"))
+=== Tree baseline ===
+=== tree_seq16 ===
+model params: 939,839
+vocab=65, seq_len=16, embed=32, state=128, depth=4
+bottleneck: 128 floats vs 96.4 bits per window
+majority baseline val acc: 0.148
+epoch   1 | train_loss 3.3865 acc 0.145 | val_loss 3.3109 acc 0.155 | 4s
+epoch   5 | train_loss 3.0438 acc 0.193 | val_loss 2.9935 acc 0.209 | 17s
+epoch  10 | train_loss 2.4630 acc 0.319 | val_loss 2.4761 acc 0.327 | 34s
+epoch  15 | train_loss 1.8131 acc 0.476 | val_loss 1.9504 acc 0.447 | 51s
+epoch  20 | train_loss 0.9990 acc 0.691 | val_loss 1.2297 acc 0.636 | 68s
+epoch  25 | train_loss 0.4535 acc 0.856 | val_loss 0.8262 acc 0.759 | 85s
+epoch  30 | train_loss 0.2250 acc 0.929 | val_loss 0.7345 acc 0.805 | 101s
+
+reconstruction samples (val, unseen):
+  [11/16]  "rth, I'll make y"  ->  'cat, Iowl make y'
+  [14/16]  "all hearts i' th"  ->  'all hearus if th'
+  [14/16]  "\nMy father's of "  ->  "\nOy aather's of "
+  [14/16]  'how beastly she '  ->  'hor befstly she '
+
+=== LSTM baseline (same dims) ===
+=== lstm_seq16 ===
+model params: 242,401
+vocab=65, seq_len=16, embed=32, state=128, depth=4
+bottleneck: 128 floats vs 96.4 bits per window
+majority baseline val acc: 0.148
+epoch   1 | train_loss 3.3966 acc 0.141 | val_loss 3.2675 acc 0.148 | 2s
+epoch   5 | train_loss 2.9844 acc 0.182 | val_loss 2.9280 acc 0.188 | 11s
+epoch  10 | train_loss 2.4484 acc 0.268 | val_loss 2.4542 acc 0.270 | 22s
+epoch  15 | train_loss 1.9873 acc 0.374 | val_loss 2.1052 acc 0.350 | 34s
+epoch  20 | train_loss 1.6108 acc 0.479 | val_loss 1.8867 acc 0.414 | 45s
+epoch  25 | train_loss 1.2928 acc 0.578 | val_loss 1.6864 acc 0.475 | 56s
+epoch  30 | train_loss 1.0362 acc 0.662 | val_loss 1.6049 acc 0.500 | 67s
+
+reconstruction samples (val, unseen):
+  [6/16]  "rth, I'll make y"  ->  'tttt, Ial mmey y'
+  [6/16]  "all hearts i' th"  ->  'llathhees sin th'
+  [6/16]  "\nMy father's of "  ->  ',y or taares oo '
+  [6/16]  'how beastly she '  ->  'wwww   llss she '
+
+=== SUMMARY ===
+tree: params=939,839  val_acc=0.805  time=101s
+lstm: params=242,401  val_acc=0.500  time=67s
+tree vs lstm val_acc delta: +0.304
