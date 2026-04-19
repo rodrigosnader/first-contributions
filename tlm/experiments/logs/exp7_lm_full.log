@@ -1,0 +1,60 @@
+/usr/local/lib/python3.11/dist-packages/torch/_subclasses/functional_tensor.py:307: UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:84.)
+  cpu = _conversion_method_template(device=torch.device("cpu"))
+=== TreeLMv2 (trees both sides) ===
+=== tree_lm_v2 ===
+model: TreeLMv2, params: 772,684
+vocab=65, seq_len=64, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.435 acc 0.340 | val BPC 2.910 acc 0.408 | 43s
+epoch   5 | train BPC 2.133 acc 0.544 | val BPC 2.519 acc 0.487 | 215s
+epoch  10 | train BPC 1.826 acc 0.600 | val BPC 2.593 acc 0.490 | 433s
+epoch  15 | train BPC 1.581 acc 0.649 | val BPC 2.825 acc 0.482 | 650s
+epoch  20 | train BPC 1.357 acc 0.695 | val BPC 3.125 acc 0.469 | 862s
+epoch  25 | train BPC 1.160 acc 0.737 | val BPC 3.501 acc 0.455 | 1073s
+epoch  30 | train BPC 0.991 acc 0.774 | val BPC 3.852 acc 0.451 | 1287s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+KING EDWARD IV:
+The new-heal'd with a pursuivant at the gentlemen,
+A bloody brows, his cunning can core the minute to say you to visit:
+Tramrous wretched, hateful father's strue knighthood to his brot
+--- end ---
+
+=== LSTMLMv2 (MLPs both sides, same shape) ===
+=== lstm_lm_v2 ===
+model: LSTMLMv2, params: 275,169
+vocab=65, seq_len=64, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.673 acc 0.299 | val BPC 3.156 acc 0.365 | 21s
+epoch   5 | train BPC 2.365 acc 0.505 | val BPC 2.648 acc 0.466 | 103s
+epoch  10 | train BPC 2.078 acc 0.555 | val BPC 2.574 acc 0.490 | 204s
+epoch  15 | train BPC 1.926 acc 0.581 | val BPC 2.600 acc 0.497 | 307s
+epoch  20 | train BPC 1.804 acc 0.604 | val BPC 2.671 acc 0.497 | 411s
+epoch  25 | train BPC 1.697 acc 0.625 | val BPC 2.790 acc 0.493 | 514s
+epoch  30 | train BPC 1.597 acc 0.644 | val BPC 2.965 acc 0.484 | 618s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+JULIET:
+We must be used thy son and change.
+
+SICINIUS:
+True each was an emble.
+
+BRUTUS:
+How is, that your prison!
+
+ANGELO:
+Why, farewell.
+
+Both Mestinuence, then I said, then less this age it;
+And pen
+--- end ---
+
+=== SUMMARY ===
+model                    params    val_bpc    val_acc     time
+tree_lm_v2              772,684      2.519      0.490    1288s
+lstm_lm_v2              275,169      2.574      0.497     619s
+
+delta tree - lstm: -0.056 BPC
