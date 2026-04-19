@@ -19,6 +19,7 @@ class LMConfig:
     state_dim: int = 128
     depth: int = 4
     relation_dim: int = 64
+    context_dim: int = 64
     n_train: int = 4000
     n_val: int = 500
     batch_size: int = 64
@@ -48,8 +49,13 @@ def run_lm(cfg: LMConfig, model_ctor=TreeLM):
     )
     vocab_size = len(stoi)
 
-    model = model_ctor(vocab_size, embed_dim=cfg.embed_dim, state_dim=cfg.state_dim,
-                       depth=cfg.depth, relation_dim=cfg.relation_dim, max_len=cfg.seq_len)
+    import inspect
+    sig = inspect.signature(model_ctor)
+    kwargs = dict(embed_dim=cfg.embed_dim, state_dim=cfg.state_dim,
+                  depth=cfg.depth, relation_dim=cfg.relation_dim, max_len=cfg.seq_len)
+    if "context_dim" in sig.parameters:
+        kwargs["context_dim"] = cfg.context_dim
+    model = model_ctor(vocab_size, **kwargs)
     n_params = sum(p.numel() for p in model.parameters())
     print(f"=== {cfg.name} ===")
     print(f"model: {model.__class__.__name__}, params: {n_params:,}")
