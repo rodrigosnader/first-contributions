@@ -1,0 +1,46 @@
+/usr/local/lib/python3.11/dist-packages/torch/_subclasses/functional_tensor.py:307: UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:84.)
+  cpu = _conversion_method_template(device=torch.device("cpu"))
+=== baseline (no relation extractor) ===
+=== base_seq16 ===
+model params: 939,839
+vocab=65, seq_len=16, embed=32, state=128, depth=4
+bottleneck: 128 floats vs 96.4 bits per window
+majority baseline val acc: 0.148
+epoch   1 | train_loss 3.3865 acc 0.145 | val_loss 3.3109 acc 0.155 | 3s
+epoch   5 | train_loss 3.0438 acc 0.193 | val_loss 2.9935 acc 0.209 | 17s
+epoch  10 | train_loss 2.4630 acc 0.319 | val_loss 2.4761 acc 0.327 | 34s
+epoch  15 | train_loss 1.8131 acc 0.476 | val_loss 1.9504 acc 0.447 | 51s
+epoch  20 | train_loss 0.9990 acc 0.691 | val_loss 1.2297 acc 0.636 | 68s
+epoch  25 | train_loss 0.4535 acc 0.856 | val_loss 0.8262 acc 0.759 | 85s
+epoch  30 | train_loss 0.2250 acc 0.929 | val_loss 0.7345 acc 0.805 | 102s
+
+reconstruction samples (val, unseen):
+  [11/16]  "rth, I'll make y"  ->  'cat, Iowl make y'
+  [14/16]  "all hearts i' th"  ->  'all hearus if th'
+  [14/16]  "\nMy father's of "  ->  "\nOy aather's of "
+  [14/16]  'how beastly she '  ->  'hor befstly she '
+
+=== with relation extractor ===
+=== rel_seq16 ===
+model params: 1,040,270
+vocab=65, seq_len=16, embed=32, state=128, depth=4
+bottleneck: 128 floats vs 96.4 bits per window
+majority baseline val acc: 0.148
+epoch   1 | train_loss 3.3715 acc 0.145 | val_loss 3.3000 acc 0.153 | 5s
+epoch   5 | train_loss 2.5113 acc 0.320 | val_loss 2.4153 acc 0.335 | 23s
+epoch  10 | train_loss 1.2492 acc 0.628 | val_loss 1.2246 acc 0.633 | 45s
+epoch  15 | train_loss 0.5214 acc 0.832 | val_loss 0.6795 acc 0.788 | 68s
+epoch  20 | train_loss 0.2205 acc 0.929 | val_loss 0.4778 acc 0.853 | 90s
+epoch  25 | train_loss 0.0856 acc 0.976 | val_loss 0.3529 acc 0.896 | 112s
+epoch  30 | train_loss 0.0569 acc 0.983 | val_loss 0.3430 acc 0.903 | 134s
+
+reconstruction samples (val, unseen):
+  [15/16]  "rth, I'll make y"  ->  "rths I'll make y"
+  [14/16]  "all hearts i' th"  ->  'als hearts io th'
+  [13/16]  "\nMy father's of "  ->  '\nNy satheras of '
+  [13/16]  'how beastly she '  ->  'ra  beastly she '
+
+=== SUMMARY ===
+baseline:  params=939,839  val_acc=0.805
+relation:  params=1,040,270  val_acc=0.903
+delta: +0.099
