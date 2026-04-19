@@ -1,0 +1,26 @@
+/usr/local/lib/python3.11/dist-packages/torch/_subclasses/functional_tensor.py:307: UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:84.)
+  cpu = _conversion_method_template(device=torch.device("cpu"))
+
+
+
+=== bpe1024_seq16 ===
+model params: 1,094,238
+vocab=1024, seq_len=16, embed=32, state=128, depth=4
+bottleneck: 128 floats vs 160.0 bits per window
+majority baseline val acc: 0.050
+epoch   1 | train_loss 6.0499 acc 0.049 | val_loss 6.0001 acc 0.050 | 6s
+epoch   5 | train_loss 5.6910 acc 0.079 | val_loss 5.6746 acc 0.098 | 28s
+epoch  10 | train_loss 3.1752 acc 0.398 | val_loss 3.7862 acc 0.344 | 55s
+epoch  15 | train_loss 1.3901 acc 0.700 | val_loss 3.0236 acc 0.461 | 82s
+epoch  20 | train_loss 0.3742 acc 0.907 | val_loss 2.8300 acc 0.529 | 108s
+epoch  25 | train_loss 0.0172 acc 1.000 | val_loss 2.5119 acc 0.611 | 135s
+epoch  30 | train_loss 0.0055 acc 1.000 | val_loss 2.5630 acc 0.622 | 161s
+
+reconstruction samples (val, unseen):
+  [6/47]  "ma z em ent : some time I ' ld di vi de , And b"  ->  "mo il ation a : H ie I ' pe u vi de , And b"
+  [15/50]  "he ' s w ind ing up the w atch of his wit ; by and"  ->  "he ' s w ha ing after the w br of ne ha ; by and"
+  [14/52]  "thou say ' st , were we he ave d then ce , But bl es"  ->  "thou I ' go , a we he an d re ce , es r es"
+  [2/53]  'sweet w en ch , they shall not t ou ch thee , K ate :'  ->  'This w en es , my shall ry t at ch thee , E BOLINGBROKE :'
+
+=== SUMMARY ===
+BPE vocab: 1024, best_val_acc: 0.622, time: 161s
