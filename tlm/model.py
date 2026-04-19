@@ -41,15 +41,17 @@ class SoftTree(nn.Module):
 
 
 class TreeCell(nn.Module):
-    """Recurrent cell: state_t = Tree(concat(input_t, state_{t-1}))."""
+    """Recurrent cell: state_t = LayerNorm(Tree(concat(input_t, state_{t-1}))).
+    LayerNorm keeps state magnitude stable across long recurrent unrolls."""
 
     def __init__(self, input_dim: int, state_dim: int, depth: int):
         super().__init__()
         self.state_dim = state_dim
         self.tree = SoftTree(input_dim + state_dim, state_dim, depth)
+        self.norm = nn.LayerNorm(state_dim)
 
     def forward(self, x: torch.Tensor, state: torch.Tensor) -> torch.Tensor:
-        return self.tree(torch.cat([x, state], dim=-1))
+        return self.norm(self.tree(torch.cat([x, state], dim=-1)))
 
 
 class TreeEncoder(nn.Module):
@@ -69,21 +71,26 @@ class TreeEncoder(nn.Module):
 
 
 class TreeDecoder(nn.Module):
-    """Initialized with compressed state, unrolls seq_len steps using positional input."""
+    """Reads from compressed memory at each step. Input per step =
+    concat(position_embed, compressed_state). Decoder's own recurrent state is
+    kept separately so the memory is re-injected every step instead of
+    decaying through LayerNorm recurrence."""
 
     def __init__(self, vocab_size: int, embed_dim: int, state_dim: int, depth: int, max_len: int):
         super().__init__()
         self.pos_embed = nn.Embedding(max_len, embed_dim)
-        self.cell = TreeCell(embed_dim, state_dim, depth)
+        self.cell = TreeCell(embed_dim + state_dim, state_dim, depth)
         self.output_head = nn.Linear(state_dim, vocab_size)
+        self.state_dim = state_dim
 
     def forward(self, compressed_state: torch.Tensor, seq_len: int) -> torch.Tensor:
         batch = compressed_state.shape[0]
-        state = compressed_state
+        state = torch.zeros(batch, self.state_dim, device=compressed_state.device)
         logits = []
         for t in range(seq_len):
             pos = torch.full((batch,), t, device=state.device, dtype=torch.long)
-            state = self.cell(self.pos_embed(pos), state)
+            step_input = torch.cat([self.pos_embed(pos), compressed_state], dim=-1)
+            state = self.cell(step_input, state)
             logits.append(self.output_head(state))
         return torch.stack(logits, dim=1)
 
