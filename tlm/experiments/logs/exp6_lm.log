@@ -1,0 +1,82 @@
+/usr/local/lib/python3.11/dist-packages/torch/_subclasses/functional_tensor.py:307: UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:84.)
+  cpu = _conversion_method_template(device=torch.device("cpu"))
+=== TreeLM ===
+=== tree_lm ===
+model: TreeLM, params: 443,295
+vocab=65, seq_len=64, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.449 acc 0.342 | val BPC 2.960 acc 0.404 | 17s
+epoch   5 | train BPC 2.175 acc 0.541 | val BPC 2.531 acc 0.484 | 78s
+epoch  10 | train BPC 1.876 acc 0.595 | val BPC 2.592 acc 0.490 | 155s
+epoch  15 | train BPC 1.664 acc 0.638 | val BPC 2.754 acc 0.480 | 233s
+epoch  20 | train BPC 1.475 acc 0.677 | val BPC 3.018 acc 0.470 | 311s
+epoch  25 | train BPC 1.322 acc 0.709 | val BPC 3.310 acc 0.456 | 391s
+epoch  30 | train BPC 1.192 acc 0.736 | val BPC 3.591 acc 0.444 | 469s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+LArd Margaret's piece, to him to the Rome in the world:
+That divided by Bohemes and that in the abt out, if they fear
+How to scorn towards Swear not by the lord
+And warnable vIRd ScGool;
+And mosk'd fr
+--- end ---
+
+=== LSTM LM (state=128, smaller) ===
+=== lstm_lm_128 ===
+model: LSTMLM, params: 93,409
+vocab=65, seq_len=64, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 4.273 acc 0.228 | val BPC 3.581 acc 0.317 | 6s
+epoch   5 | train BPC 2.786 acc 0.436 | val BPC 2.880 acc 0.416 | 31s
+epoch  10 | train BPC 2.442 acc 0.499 | val BPC 2.677 acc 0.456 | 61s
+epoch  15 | train BPC 2.286 acc 0.526 | val BPC 2.606 acc 0.472 | 91s
+epoch  20 | train BPC 2.184 acc 0.543 | val BPC 2.565 acc 0.481 | 121s
+epoch  25 | train BPC 2.114 acc 0.556 | val BPC 2.558 acc 0.484 | 151s
+epoch  30 | train BPC 2.055 acc 0.567 | val BPC 2.562 acc 0.488 | 181s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+FROTH:
+O, comest thou life for the bier act
+and then Herry storn'd and, if I have be peace.
+
+MERCUTIO:
+Must false emptiment never tambook of York sea,
+Rescorner of this high to make a conser.
+
+PAULINA
+--- end ---
+
+=== LSTM LM (state=512, param-matched) ===
+=== lstm_lm_512 ===
+model: LSTMLM, params: 1,153,633
+vocab=65, seq_len=64, state=512
+random baseline BPC: 6.022
+epoch   1 | train BPC 4.209 acc 0.234 | val BPC 3.419 acc 0.336 | 13s
+epoch   5 | train BPC 2.366 acc 0.511 | val BPC 2.593 acc 0.475 | 65s
+epoch  10 | train BPC 1.928 acc 0.590 | val BPC 2.485 acc 0.500 | 129s
+epoch  15 | train BPC 1.584 acc 0.663 | val BPC 2.636 acc 0.489 | 194s
+epoch  20 | train BPC 1.242 acc 0.737 | val BPC 2.926 acc 0.478 | 259s
+epoch  25 | train BPC 0.993 acc 0.792 | val BPC 3.264 acc 0.464 | 324s
+epoch  30 | train BPC 0.822 acc 0.826 | val BPC 3.575 acc 0.451 | 388s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+KING EDWARD IV:
+Once more weary thou bady two go?
+
+Third Roman:
+Or else,
+We shall be still not smile at this, sir, so turtles paur,
+The steers be prepars. I shall go, this grace,
+How is my lady too th
+--- end ---
+
+=== SUMMARY ===
+model                    params    val_bpc    val_acc     time
+tree_lm                 443,295      2.531      0.490     470s
+lstm_lm_128              93,409      2.558      0.488     182s
+lstm_lm_512           1,153,633      2.485      0.500     389s
+
+random baseline BPC: 6.022 (vocab=65)
