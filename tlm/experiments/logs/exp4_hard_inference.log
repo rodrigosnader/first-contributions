@@ -1,0 +1,26 @@
+/usr/local/lib/python3.11/dist-packages/torch/_subclasses/functional_tensor.py:307: UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:84.)
+  cpu = _conversion_method_template(device=torch.device("cpu"))
+=== train_soft ===
+model params: 939,839
+vocab=65, seq_len=16, embed=32, state=128, depth=4
+bottleneck: 128 floats vs 96.4 bits per window
+majority baseline val acc: 0.148
+epoch   1 | train_loss 3.3865 acc 0.145 | val_loss 3.3109 acc 0.155 | 4s
+epoch   5 | train_loss 3.0438 acc 0.193 | val_loss 2.9935 acc 0.209 | 17s
+epoch  10 | train_loss 2.4630 acc 0.319 | val_loss 2.4761 acc 0.327 | 34s
+epoch  15 | train_loss 1.8131 acc 0.476 | val_loss 1.9504 acc 0.447 | 51s
+epoch  20 | train_loss 0.9990 acc 0.691 | val_loss 1.2297 acc 0.636 | 68s
+epoch  25 | train_loss 0.4535 acc 0.856 | val_loss 0.8262 acc 0.759 | 85s
+epoch  30 | train_loss 0.2250 acc 0.929 | val_loss 0.7345 acc 0.805 | 102s
+
+reconstruction samples (val, unseen):
+  [11/16]  "rth, I'll make y"  ->  'cat, Iowl make y'
+  [14/16]  "all hearts i' th"  ->  'all hearus if th'
+  [14/16]  "\nMy father's of "  ->  "\nOy aather's of "
+  [14/16]  'how beastly she '  ->  'hor befstly she '
+
+=== SUMMARY ===
+soft inference: val_acc=0.805  batch_time=0.261s
+hard inference: val_acc=0.334  batch_time=0.258s
+accuracy drop: +0.470
+speedup: 1.01x
