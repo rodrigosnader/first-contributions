@@ -1,0 +1,102 @@
+/usr/local/lib/python3.11/dist-packages/torch/_subclasses/functional_tensor.py:307: UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:84.)
+  cpu = _conversion_method_template(device=torch.device("cpu"))
+=== Tree baseline ===
+=== tree_seq16 ===
+model params: 939,839
+vocab=65, seq_len=16, embed=32, state=128, depth=4
+bottleneck: 128 floats vs 96.4 bits per window
+majority baseline val acc: 0.148
+epoch   1 | train_loss 3.3865 acc 0.145 | val_loss 3.3109 acc 0.155 | 4s
+epoch   5 | train_loss 3.0438 acc 0.193 | val_loss 2.9935 acc 0.209 | 18s
+epoch  10 | train_loss 2.4630 acc 0.319 | val_loss 2.4761 acc 0.327 | 35s
+epoch  15 | train_loss 1.8131 acc 0.476 | val_loss 1.9504 acc 0.447 | 52s
+epoch  20 | train_loss 0.9990 acc 0.691 | val_loss 1.2297 acc 0.636 | 69s
+epoch  25 | train_loss 0.4535 acc 0.856 | val_loss 0.8262 acc 0.759 | 86s
+epoch  30 | train_loss 0.2250 acc 0.929 | val_loss 0.7345 acc 0.805 | 103s
+
+reconstruction samples (val, unseen):
+  [11/16]  "rth, I'll make y"  ->  'cat, Iowl make y'
+  [14/16]  "all hearts i' th"  ->  'all hearus if th'
+  [14/16]  "\nMy father's of "  ->  "\nOy aather's of "
+  [14/16]  'how beastly she '  ->  'hor befstly she '
+
+=== LSTM baseline (same dims) ===
+=== lstm_seq16 ===
+model params: 242,401
+vocab=65, seq_len=16, embed=32, state=128, depth=4
+bottleneck: 128 floats vs 96.4 bits per window
+majority baseline val acc: 0.148
+epoch   1 | train_loss 3.3966 acc 0.141 | val_loss 3.2675 acc 0.148 | 2s
+epoch   5 | train_loss 2.9844 acc 0.182 | val_loss 2.9280 acc 0.188 | 11s
+epoch  10 | train_loss 2.4484 acc 0.268 | val_loss 2.4542 acc 0.270 | 22s
+epoch  15 | train_loss 1.9873 acc 0.374 | val_loss 2.1052 acc 0.350 | 34s
+epoch  20 | train_loss 1.6108 acc 0.479 | val_loss 1.8867 acc 0.414 | 45s
+epoch  25 | train_loss 1.2928 acc 0.578 | val_loss 1.6864 acc 0.475 | 56s
+epoch  30 | train_loss 1.0362 acc 0.662 | val_loss 1.6049 acc 0.500 | 67s
+
+reconstruction samples (val, unseen):
+  [6/16]  "rth, I'll make y"  ->  'tttt, Ial mmey y'
+  [6/16]  "all hearts i' th"  ->  'llathhees sin th'
+  [6/16]  "\nMy father's of "  ->  ',y or taares oo '
+  [6/16]  'how beastly she '  ->  'wwww   llss she '
+
+=== SUMMARY ===
+tree: params=939,839  val_acc=0.805  time=103s
+lstm: params=242,401  val_acc=0.500  time=67s
+tree vs lstm val_acc delta: +0.304
+=== LSTM state_dim=256 (param-matched-ish), 60 epochs ===
+=== lstm256_seq16 ===
+model params: 875,361
+vocab=65, seq_len=16, embed=32, state=256, depth=4
+bottleneck: 256 floats vs 96.4 bits per window
+majority baseline val acc: 0.148
+epoch   1 | train_loss 3.3051 acc 0.149 | val_loss 3.1901 acc 0.163 | 3s
+epoch   5 | train_loss 2.5002 acc 0.243 | val_loss 2.4394 acc 0.259 | 16s
+epoch  10 | train_loss 1.6043 acc 0.454 | val_loss 1.8106 acc 0.406 | 32s
+epoch  15 | train_loss 0.9637 acc 0.668 | val_loss 1.5809 acc 0.486 | 48s
+epoch  20 | train_loss 0.5098 acc 0.845 | val_loss 1.6177 acc 0.513 | 64s
+epoch  25 | train_loss 0.2308 acc 0.949 | val_loss 1.7846 acc 0.518 | 80s
+epoch  30 | train_loss 0.1183 acc 0.982 | val_loss 1.9277 acc 0.520 | 96s
+epoch  35 | train_loss 0.0219 acc 1.000 | val_loss 2.0428 acc 0.530 | 112s
+epoch  40 | train_loss 0.0123 acc 1.000 | val_loss 2.1509 acc 0.527 | 129s
+epoch  45 | train_loss 0.0084 acc 1.000 | val_loss 2.2333 acc 0.526 | 144s
+epoch  50 | train_loss 0.0062 acc 1.000 | val_loss 2.3051 acc 0.527 | 160s
+epoch  55 | train_loss 0.0047 acc 1.000 | val_loss 2.3692 acc 0.526 | 176s
+epoch  60 | train_loss 0.0037 acc 1.000 | val_loss 2.4281 acc 0.526 | 192s
+
+reconstruction samples (val, unseen):
+  [9/16]  "rth, I'll make y"  ->  'cre, IIll  mke  '
+  [11/16]  "all hearts i' th"  ->  "all hhrr'  iu th"
+  [8/16]  "\nMy father's of "  ->  '\nNNayftteess of '
+  [8/16]  'how beastly she '  ->  'how  basessthee '
+
+=== LSTM state_dim=384, 60 epochs ===
+=== lstm384_seq16 ===
+model params: 1,901,537
+vocab=65, seq_len=16, embed=32, state=384, depth=4
+bottleneck: 384 floats vs 96.4 bits per window
+majority baseline val acc: 0.148
+epoch   1 | train_loss 3.3415 acc 0.142 | val_loss 3.2893 acc 0.151 | 4s
+epoch   5 | train_loss 3.0655 acc 0.175 | val_loss 2.9976 acc 0.186 | 19s
+epoch  10 | train_loss 2.6688 acc 0.237 | val_loss 2.6909 acc 0.238 | 39s
+epoch  15 | train_loss 2.2396 acc 0.336 | val_loss 2.3681 acc 0.321 | 58s
+epoch  20 | train_loss 1.7786 acc 0.460 | val_loss 2.0779 acc 0.397 | 77s
+epoch  25 | train_loss 1.2342 acc 0.627 | val_loss 1.9495 acc 0.444 | 96s
+epoch  30 | train_loss 0.7736 acc 0.778 | val_loss 1.9607 acc 0.464 | 115s
+epoch  35 | train_loss 0.3757 acc 0.911 | val_loss 2.1281 acc 0.477 | 134s
+epoch  40 | train_loss 0.1244 acc 0.989 | val_loss 2.3198 acc 0.475 | 153s
+epoch  45 | train_loss 0.0389 acc 1.000 | val_loss 2.4814 acc 0.480 | 173s
+epoch  50 | train_loss 0.0193 acc 1.000 | val_loss 2.6076 acc 0.479 | 192s
+epoch  55 | train_loss 0.0122 acc 1.000 | val_loss 2.7086 acc 0.473 | 213s
+epoch  60 | train_loss 0.0085 acc 1.000 | val_loss 2.7889 acc 0.474 | 250s
+
+reconstruction samples (val, unseen):
+  [6/16]  "rth, I'll make y"  ->  'kttt;\nIo  lale y'
+  [10/16]  "all hearts i' th"  ->  'aal  harss as th'
+  [7/16]  "\nMy father's of "  ->  '\nyoofra hhas of '
+  [7/16]  'how beastly she '  ->  'hoollllltss hhe '
+
+=== SUMMARY ===
+lstm256: params=875,361  val_acc=0.530  time=192s
+lstm384: params=1,901,537  val_acc=0.480  time=250s
+(compare to tree state_dim=128 at 940k params, val_acc=0.805)
