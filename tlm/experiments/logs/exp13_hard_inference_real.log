@@ -1,0 +1,68 @@
+/usr/local/lib/python3.11/dist-packages/torch/_subclasses/functional_tensor.py:307: UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:84.)
+  cpu = _conversion_method_template(device=torch.device("cpu"))
+========================================
+baseline tree (per-leaf Linears)
+========================================
+=== tree_baseline ===
+model: TreeLMv2, params: 387,364
+vocab=65, seq_len=64, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.563 acc 0.322 | val BPC 3.040 acc 0.380 | 25s
+epoch   5 | train BPC 2.248 acc 0.526 | val BPC 2.614 acc 0.470 | 116s
+epoch  10 | train BPC 1.947 acc 0.578 | val BPC 2.639 acc 0.489 | 186s
+epoch  15 | train BPC 1.732 acc 0.619 | val BPC 2.781 acc 0.477 | 247s
+epoch  20 | train BPC 1.546 acc 0.657 | val BPC 3.017 acc 0.469 | 306s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+KATHARINA:
+I masht the thether's fortune! his good king,
+For a foolish.
+
+Second Mut it be procees,
+But thy sons, so like an arsion, to see your eyes arms, if heaven to chish to save this poor souls:
+H
+--- end ---
+
+--- tree_baseline hard-inference report ---
+routing |logit| avg: 2.313  (higher = more committed)
+soft: BPC 3.017  acc 0.469
+hard: BPC 6.155  acc 0.199
+acc drop: +0.270  bpc delta: +3.138
+bs= 1: soft 413.23ms/batch, hard 289.92ms/batch, speedup 1.43x
+bs=32: soft 53.85ms/batch, hard 74.21ms/batch, speedup 0.73x
+
+========================================
+shared-backbone tree (exp10 winner)
+========================================
+=== tree_shared ===
+model: TreeLMv2Shared, params: 268,644
+vocab=65, seq_len=64, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.675 acc 0.309 | val BPC 3.078 acc 0.375 | 13s
+epoch   5 | train BPC 2.393 acc 0.499 | val BPC 2.702 acc 0.454 | 62s
+epoch  10 | train BPC 2.170 acc 0.537 | val BPC 2.617 acc 0.479 | 125s
+epoch  15 | train BPC 2.055 acc 0.555 | val BPC 2.641 acc 0.475 | 187s
+epoch  20 | train BPC 1.983 acc 0.566 | val BPC 2.658 acc 0.483 | 248s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+KING RICHARD III:
+Where is broken fortune not have untile and stone.
+
+DUCHESS OF YORK:
+Refuse I seas froth a frood to Debidy: any it, or his does a dish the may be a coural; go to stand yond thy seize
+--- end ---
+
+--- tree_shared hard-inference report ---
+routing |logit| avg: 2.152  (higher = more committed)
+soft: BPC 2.658  acc 0.483
+hard: BPC 5.188  acc 0.205
+acc drop: +0.278  bpc delta: +2.530
+bs= 1: soft 441.67ms/batch, hard 573.48ms/batch, speedup 0.77x
+bs=32: soft 56.02ms/batch, hard 77.18ms/batch, speedup 0.73x
+
+=== SUMMARY ===
+variant            conf  soft_bpc  hard_bpc  soft_b1_ms  hard_b1_ms  speedup
+tree_baseline      2.31     3.017     6.155      413.23      289.92    1.43x
+tree_shared        2.15     2.658     5.188      441.67      573.48    0.77x
