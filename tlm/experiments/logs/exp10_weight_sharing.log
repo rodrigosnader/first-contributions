@@ -1,0 +1,106 @@
+/usr/local/lib/python3.11/dist-packages/torch/_subclasses/functional_tensor.py:307: UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:84.)
+  cpu = _conversion_method_template(device=torch.device("cpu"))
+
+=== baseline (per-leaf Linear) ===
+=== tree_baseline ===
+model: TreeLMv2, params: 387,364
+vocab=65, seq_len=64, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.381 acc 0.347 | val BPC 2.929 acc 0.408 | 22s
+epoch   5 | train BPC 2.184 acc 0.538 | val BPC 2.560 acc 0.485 | 108s
+epoch  10 | train BPC 1.924 acc 0.583 | val BPC 2.579 acc 0.494 | 214s
+epoch  15 | train BPC 1.746 acc 0.616 | val BPC 2.709 acc 0.487 | 320s
+epoch  20 | train BPC 1.588 acc 0.648 | val BPC 2.908 acc 0.475 | 422s
+epoch  25 | train BPC 1.454 acc 0.676 | val BPC 3.116 acc 0.466 | 521s
+epoch  30 | train BPC 1.344 acc 0.699 | val BPC 3.319 acc 0.460 | 620s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+FRIAR LAURENCE:
+Come, I pray thee, good busined forth,
+I have devotion with me.
+I desire you to be give your mispoletitor,
+And strip and
+the best of the divil that I will not hence from thee and wilde
+--- end ---
+
+=== shared backbone + low-rank ===
+=== tree_shared ===
+model: TreeLMv2Shared, params: 268,644
+vocab=65, seq_len=64, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.480 acc 0.336 | val BPC 2.976 acc 0.396 | 21s
+epoch   5 | train BPC 2.331 acc 0.509 | val BPC 2.621 acc 0.469 | 103s
+epoch  10 | train BPC 2.140 acc 0.542 | val BPC 2.566 acc 0.482 | 203s
+epoch  15 | train BPC 2.052 acc 0.556 | val BPC 2.551 acc 0.492 | 305s
+epoch  20 | train BPC 1.983 acc 0.566 | val BPC 2.570 acc 0.491 | 407s
+epoch  25 | train BPC 1.926 acc 0.576 | val BPC 2.612 acc 0.493 | 510s
+epoch  30 | train BPC 1.881 acc 0.583 | val BPC 2.635 acc 0.493 | 613s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+JULIET:
+We shall you this is the tiget sighish secribunes, sir, the deaths;
+One like a content of this hour thee are you. I am seem of lovester, I will I was in him thee every despenge you too loves,
+
+--- end ---
+
+=== shared + FiLM modulation ===
+=== tree_film ===
+model: TreeLMv2FiLM, params: 216,484
+vocab=65, seq_len=64, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.475 acc 0.333 | val BPC 3.029 acc 0.390 | 20s
+epoch   5 | train BPC 2.394 acc 0.497 | val BPC 2.684 acc 0.450 | 99s
+epoch  10 | train BPC 2.195 acc 0.532 | val BPC 2.610 acc 0.478 | 199s
+epoch  15 | train BPC 2.086 acc 0.551 | val BPC 2.594 acc 0.484 | 297s
+epoch  20 | train BPC 2.008 acc 0.563 | val BPC 2.608 acc 0.487 | 395s
+epoch  25 | train BPC 1.949 acc 0.573 | val BPC 2.638 acc 0.491 | 494s
+epoch  30 | train BPC 1.898 acc 0.582 | val BPC 2.674 acc 0.489 | 600s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+KING RICHARD III:
+Nay, welcome one word open as Aufidiuse of and his eastly of my continuar,
+That is poss, is not of justom to ender,
+Deceit is that will he did scalse of simew
+Hath he speak and appre
+--- end ---
+
+=== LSTMLMv2 reference ===
+=== lstm_v2 ===
+model: LSTMLMv2, params: 275,169
+vocab=65, seq_len=64, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.673 acc 0.299 | val BPC 3.156 acc 0.365 | 14s
+epoch   5 | train BPC 2.365 acc 0.505 | val BPC 2.648 acc 0.466 | 72s
+epoch  10 | train BPC 2.078 acc 0.555 | val BPC 2.574 acc 0.490 | 144s
+epoch  15 | train BPC 1.926 acc 0.581 | val BPC 2.600 acc 0.497 | 218s
+epoch  20 | train BPC 1.804 acc 0.604 | val BPC 2.671 acc 0.497 | 293s
+epoch  25 | train BPC 1.697 acc 0.625 | val BPC 2.790 acc 0.493 | 367s
+epoch  30 | train BPC 1.597 acc 0.644 | val BPC 2.965 acc 0.484 | 441s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+JULIET:
+We must be used thy son and change.
+
+SICINIUS:
+True each was an emble.
+
+BRUTUS:
+How is, that your prison!
+
+ANGELO:
+Why, farewell.
+
+Both Mestinuence, then I said, then less this age it;
+And pen
+--- end ---
+
+=== SUMMARY ===
+variant                              params   best_vbpc    val_acc
+baseline (per-leaf Linear)          387,364       2.560      0.494
+shared backbone + low-rank          268,644       2.551      0.493
+shared + FiLM modulation            216,484       2.594      0.491
+LSTMLMv2 reference                  275,169       2.574      0.497
