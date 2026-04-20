@@ -90,6 +90,105 @@ class GatedTreeCell(nn.Module):
         return self.norm(g * state + (1 - g) * proposed)
 
 
+class SharedBackboneSoftTree(nn.Module):
+    """Soft tree with weight-shared backbone. All leaves read from the same
+    shared projection of the input; they differ only in how they map the
+    shared hidden representation to the output. Forces the tree to agree
+    on 'what features of the input matter', differ only in 'how to use them'."""
+
+    def __init__(self, input_dim: int, output_dim: int, depth: int,
+                 hidden_dim: int = None):
+        super().__init__()
+        self.depth = depth
+        self.output_dim = output_dim
+        self.n_internal = 2 ** depth - 1
+        self.n_leaves = 2 ** depth
+        self.hidden_dim = hidden_dim or max(output_dim // 2, 32)
+        self.router = nn.Linear(input_dim, self.n_internal)
+        self.shared = nn.Linear(input_dim, self.hidden_dim)
+        self.leaves = nn.Linear(self.hidden_dim, self.n_leaves * output_dim)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        batch = x.shape[0]
+        routing_probs = torch.sigmoid(self.router(x))
+
+        node_probs = torch.ones(batch, 1, device=x.device, dtype=x.dtype)
+        idx = 0
+        for level in range(self.depth):
+            n_at_level = 2 ** level
+            level_probs = routing_probs[:, idx:idx + n_at_level]
+            left = node_probs * level_probs
+            right = node_probs * (1.0 - level_probs)
+            node_probs = torch.stack([left, right], dim=2).reshape(batch, 2 * n_at_level)
+            idx += n_at_level
+
+        h = torch.nn.functional.gelu(self.shared(x))
+        leaf_outs = self.leaves(h).reshape(batch, self.n_leaves, self.output_dim)
+        return (node_probs.unsqueeze(-1) * leaf_outs).sum(dim=1)
+
+
+class FiLMSoftTree(nn.Module):
+    """Soft tree where leaves are FiLM modulations of a single shared
+    transform. All leaves see the same base = Linear(x); they only
+    multiply/add per-leaf gamma/beta. Strongest weight sharing: leaves
+    are variations of the same theme, cannot learn independent matrices."""
+
+    def __init__(self, input_dim: int, output_dim: int, depth: int):
+        super().__init__()
+        self.depth = depth
+        self.output_dim = output_dim
+        self.n_internal = 2 ** depth - 1
+        self.n_leaves = 2 ** depth
+        self.router = nn.Linear(input_dim, self.n_internal)
+        self.shared = nn.Linear(input_dim, output_dim)
+        self.gammas = nn.Parameter(torch.ones(self.n_leaves, output_dim))
+        self.betas = nn.Parameter(torch.zeros(self.n_leaves, output_dim))
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        batch = x.shape[0]
+        routing_probs = torch.sigmoid(self.router(x))
+
+        node_probs = torch.ones(batch, 1, device=x.device, dtype=x.dtype)
+        idx = 0
+        for level in range(self.depth):
+            n_at_level = 2 ** level
+            level_probs = routing_probs[:, idx:idx + n_at_level]
+            left = node_probs * level_probs
+            right = node_probs * (1.0 - level_probs)
+            node_probs = torch.stack([left, right], dim=2).reshape(batch, 2 * n_at_level)
+            idx += n_at_level
+
+        base = self.shared(x).unsqueeze(1)  # (batch, 1, output_dim)
+        leaf_outs = self.gammas.unsqueeze(0) * base + self.betas.unsqueeze(0)
+        return (node_probs.unsqueeze(-1) * leaf_outs).sum(dim=1)
+
+
+class SharedBackboneTreeCell(nn.Module):
+    """Recurrent cell using SharedBackboneSoftTree."""
+
+    def __init__(self, input_dim: int, state_dim: int, depth: int):
+        super().__init__()
+        self.state_dim = state_dim
+        self.tree = SharedBackboneSoftTree(input_dim + state_dim, state_dim, depth)
+        self.norm = nn.LayerNorm(state_dim)
+
+    def forward(self, x: torch.Tensor, state: torch.Tensor) -> torch.Tensor:
+        return self.norm(self.tree(torch.cat([x, state], dim=-1)))
+
+
+class FiLMTreeCell(nn.Module):
+    """Recurrent cell using FiLMSoftTree."""
+
+    def __init__(self, input_dim: int, state_dim: int, depth: int):
+        super().__init__()
+        self.state_dim = state_dim
+        self.tree = FiLMSoftTree(input_dim + state_dim, state_dim, depth)
+        self.norm = nn.LayerNorm(state_dim)
+
+    def forward(self, x: torch.Tensor, state: torch.Tensor) -> torch.Tensor:
+        return self.norm(self.tree(torch.cat([x, state], dim=-1)))
+
+
 class IdentityLeafTreeCell(nn.Module):
     """Soft tree where leaf 0 is hardcoded to return state_{t-1} verbatim.
     Other leaves are learned transforms. Routing can literally select

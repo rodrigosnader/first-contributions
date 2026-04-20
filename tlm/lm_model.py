@@ -7,6 +7,7 @@ import torch.nn as nn
 from model import (
     SoftTree, TreeCell,
     ResidualTreeCell, GatedTreeCell, IdentityLeafTreeCell,
+    SharedBackboneTreeCell, FiLMTreeCell,
 )
 
 
@@ -159,6 +160,26 @@ class TreeLMv2Gated(TreeLMv2):
         super().__init__(vocab_size, embed_dim, state_dim, depth,
                          relation_dim, context_dim, max_len)
         self.cell = GatedTreeCell(relation_dim, state_dim, depth)
+
+
+class TreeLMv2Shared(TreeLMv2):
+    """TreeLMv2 with SharedBackboneTreeCell in the encoder: all leaves read
+    from a shared projection of (input, state), differ only in output mapping."""
+    def __init__(self, vocab_size, embed_dim=32, state_dim=128, depth=4,
+                 relation_dim=64, context_dim=64, max_len=128):
+        super().__init__(vocab_size, embed_dim, state_dim, depth,
+                         relation_dim, context_dim, max_len)
+        self.cell = SharedBackboneTreeCell(relation_dim, state_dim, depth)
+
+
+class TreeLMv2FiLM(TreeLMv2):
+    """TreeLMv2 with FiLMTreeCell in the encoder: all leaves are FiLM
+    modulations (gamma, beta) of a single shared Linear transform."""
+    def __init__(self, vocab_size, embed_dim=32, state_dim=128, depth=4,
+                 relation_dim=64, context_dim=64, max_len=128):
+        super().__init__(vocab_size, embed_dim, state_dim, depth,
+                         relation_dim, context_dim, max_len)
+        self.cell = FiLMTreeCell(relation_dim, state_dim, depth)
 
 
 class TreeLMv2IdLeaf(TreeLMv2):
