@@ -9,13 +9,17 @@ class SoftTree(nn.Module):
     def __init__(self, input_dim: int, output_dim: int, depth: int):
         super().__init__()
         self.depth = depth
+        self.input_dim = input_dim
         self.output_dim = output_dim
         self.n_internal = 2 ** depth - 1
         self.n_leaves = 2 ** depth
         self.router = nn.Linear(input_dim, self.n_internal)
         self.leaves = nn.Linear(input_dim, self.n_leaves * output_dim)
+        self._hard = False
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        if self._hard:
+            return self.hard_forward(x)
         batch = x.shape[0]
         routing_probs = torch.sigmoid(self.router(x))  # (B, n_internal), prob of going LEFT
 
@@ -31,6 +35,26 @@ class SoftTree(nn.Module):
 
         leaf_outs = self.leaves(x).reshape(batch, self.n_leaves, self.output_dim)
         return (node_probs.unsqueeze(-1) * leaf_outs).sum(dim=1)
+
+    def hard_forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Genuinely sparse: traverse per-example, compute only reached leaf."""
+        batch = x.shape[0]
+        logits = self.router(x)
+        leaf_idx = torch.zeros(batch, dtype=torch.long, device=x.device)
+        node_idx = 0
+        for level in range(self.depth):
+            n_at_level = 2 ** level
+            node_logits = logits[:, node_idx:node_idx + n_at_level]
+            cur = torch.gather(node_logits, 1, leaf_idx.unsqueeze(1)).squeeze(1)
+            go_left = (cur > 0).long()
+            leaf_idx = leaf_idx * 2 + (1 - go_left)
+            node_idx += n_at_level
+
+        W = self.leaves.weight.view(self.n_leaves, self.output_dim, self.input_dim)
+        b = self.leaves.bias.view(self.n_leaves, self.output_dim)
+        W_sel = W[leaf_idx]
+        b_sel = b[leaf_idx]
+        return torch.bmm(W_sel, x.unsqueeze(-1)).squeeze(-1) + b_sel
 
     def routing_entropy(self, x: torch.Tensor) -> torch.Tensor:
         """Average binary entropy across internal nodes. ~0 = collapsed, ~ln(2) = uncommitted."""
@@ -107,8 +131,11 @@ class SharedBackboneSoftTree(nn.Module):
         self.router = nn.Linear(input_dim, self.n_internal)
         self.shared = nn.Linear(input_dim, self.hidden_dim)
         self.leaves = nn.Linear(self.hidden_dim, self.n_leaves * output_dim)
+        self._hard = False  # when True, hard_forward is used (no soft mixing)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        if self._hard:
+            return self.hard_forward(x)
         batch = x.shape[0]
         routing_probs = torch.sigmoid(self.router(x))
 
@@ -125,6 +152,31 @@ class SharedBackboneSoftTree(nn.Module):
         h = torch.nn.functional.gelu(self.shared(x))
         leaf_outs = self.leaves(h).reshape(batch, self.n_leaves, self.output_dim)
         return (node_probs.unsqueeze(-1) * leaf_outs).sum(dim=1)
+
+    def hard_forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Hard-argmax routing: traverse tree per-example, evaluate ONLY the
+        reached leaf's Linear. Genuinely sparse - computes 1 leaf instead of
+        n_leaves per example. Gathers weight rows per example via advanced
+        indexing, then a batched matmul."""
+        batch = x.shape[0]
+        logits = self.router(x)  # always compute routing logits
+        leaf_idx = torch.zeros(batch, dtype=torch.long, device=x.device)
+        node_idx = 0
+        for level in range(self.depth):
+            n_at_level = 2 ** level
+            node_logits = logits[:, node_idx:node_idx + n_at_level]
+            cur = torch.gather(node_logits, 1, leaf_idx.unsqueeze(1)).squeeze(1)
+            go_left = (cur > 0).long()
+            leaf_idx = leaf_idx * 2 + (1 - go_left)
+            node_idx += n_at_level
+
+        h = torch.nn.functional.gelu(self.shared(x))  # (B, hidden)
+        # leaves.weight: (n_leaves * output_dim, hidden_dim)
+        W = self.leaves.weight.view(self.n_leaves, self.output_dim, self.hidden_dim)
+        b = self.leaves.bias.view(self.n_leaves, self.output_dim)
+        W_sel = W[leaf_idx]  # (B, output_dim, hidden_dim)
+        b_sel = b[leaf_idx]  # (B, output_dim)
+        return torch.bmm(W_sel, h.unsqueeze(-1)).squeeze(-1) + b_sel
 
 
 class FiLMSoftTree(nn.Module):
