@@ -112,6 +112,8 @@ def run_lm(cfg: LMConfig, model_ctor=TreeLM):
         "name": cfg.name, "n_params": n_params,
         "best_val_bpc": best_val_bpc, "best_val_acc": best_val_acc,
         "time_s": time.time() - t0, "model": model,
+        "val_data": val_data, "train_data": train_data,
+        "stoi": stoi, "itos": itos, "vocab_size": vocab_size,
     }
 
 
