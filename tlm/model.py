@@ -54,6 +54,80 @@ class TreeCell(nn.Module):
         return self.norm(self.tree(torch.cat([x, state], dim=-1)))
 
 
+class ResidualTreeCell(nn.Module):
+    """state_t = LayerNorm(state_{t-1} + Tree(x, state)). Tree proposes a
+    delta; state is preserved by default. Closest analog to a residual
+    block in transformers - lets the cell learn 'do nothing' by outputting
+    a small delta."""
+
+    def __init__(self, input_dim: int, state_dim: int, depth: int):
+        super().__init__()
+        self.state_dim = state_dim
+        self.tree = SoftTree(input_dim + state_dim, state_dim, depth)
+        self.norm = nn.LayerNorm(state_dim)
+
+    def forward(self, x: torch.Tensor, state: torch.Tensor) -> torch.Tensor:
+        delta = self.tree(torch.cat([x, state], dim=-1))
+        return self.norm(state + delta)
+
+
+class GatedTreeCell(nn.Module):
+    """GRU-style update: state_t = g * state_{t-1} + (1-g) * tree_output.
+    A learned sigmoid gate decides, per dimension, how much of the old
+    state to keep vs replace with the tree's proposal."""
+
+    def __init__(self, input_dim: int, state_dim: int, depth: int):
+        super().__init__()
+        self.state_dim = state_dim
+        self.tree = SoftTree(input_dim + state_dim, state_dim, depth)
+        self.gate = nn.Linear(input_dim + state_dim, state_dim)
+        self.norm = nn.LayerNorm(state_dim)
+
+    def forward(self, x: torch.Tensor, state: torch.Tensor) -> torch.Tensor:
+        concat = torch.cat([x, state], dim=-1)
+        g = torch.sigmoid(self.gate(concat))
+        proposed = self.tree(concat)
+        return self.norm(g * state + (1 - g) * proposed)
+
+
+class IdentityLeafTreeCell(nn.Module):
+    """Soft tree where leaf 0 is hardcoded to return state_{t-1} verbatim.
+    Other leaves are learned transforms. Routing can literally select
+    'preserve state' as one of the outcomes."""
+
+    def __init__(self, input_dim: int, state_dim: int, depth: int):
+        super().__init__()
+        self.state_dim = state_dim
+        self.depth = depth
+        self.n_internal = 2 ** depth - 1
+        self.n_leaves = 2 ** depth
+        full_in = input_dim + state_dim
+        self.router = nn.Linear(full_in, self.n_internal)
+        # learned leaves: one fewer than total; leaf 0 is identity-on-state
+        self.leaves = nn.Linear(full_in, (self.n_leaves - 1) * state_dim)
+        self.norm = nn.LayerNorm(state_dim)
+
+    def forward(self, x: torch.Tensor, state: torch.Tensor) -> torch.Tensor:
+        batch = x.shape[0]
+        concat = torch.cat([x, state], dim=-1)
+
+        routing_probs = torch.sigmoid(self.router(concat))
+        node_probs = torch.ones(batch, 1, device=concat.device, dtype=concat.dtype)
+        idx = 0
+        for level in range(self.depth):
+            n_at_level = 2 ** level
+            level_probs = routing_probs[:, idx:idx + n_at_level]
+            left = node_probs * level_probs
+            right = node_probs * (1.0 - level_probs)
+            node_probs = torch.stack([left, right], dim=2).reshape(batch, 2 * n_at_level)
+            idx += n_at_level
+
+        learned = self.leaves(concat).reshape(batch, self.n_leaves - 1, self.state_dim)
+        identity = state.unsqueeze(1)
+        leaves = torch.cat([identity, learned], dim=1)  # leaf 0 = state
+        return self.norm((node_probs.unsqueeze(-1) * leaves).sum(dim=1))
+
+
 class TreeEncoder(nn.Module):
     def __init__(self, vocab_size: int, embed_dim: int, state_dim: int, depth: int):
         super().__init__()

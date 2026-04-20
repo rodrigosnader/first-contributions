@@ -4,7 +4,10 @@ state itself is the prediction substrate."""
 import torch
 import torch.nn as nn
 
-from model import SoftTree, TreeCell
+from model import (
+    SoftTree, TreeCell,
+    ResidualTreeCell, GatedTreeCell, IdentityLeafTreeCell,
+)
 
 
 class RelationExtractor(nn.Module):
@@ -138,6 +141,34 @@ class TreeLMv2(nn.Module):
             cur = torch.multinomial(probs, 1)
             out.append(cur)
         return torch.cat(out, dim=1)
+
+
+class TreeLMv2Residual(TreeLMv2):
+    """TreeLMv2 but the encoder cell is ResidualTreeCell (preserve state by default)."""
+    def __init__(self, vocab_size, embed_dim=32, state_dim=128, depth=4,
+                 relation_dim=64, context_dim=64, max_len=128):
+        super().__init__(vocab_size, embed_dim, state_dim, depth,
+                         relation_dim, context_dim, max_len)
+        self.cell = ResidualTreeCell(relation_dim, state_dim, depth)
+
+
+class TreeLMv2Gated(TreeLMv2):
+    """TreeLMv2 but the encoder cell is GatedTreeCell (GRU-style forget/keep gate)."""
+    def __init__(self, vocab_size, embed_dim=32, state_dim=128, depth=4,
+                 relation_dim=64, context_dim=64, max_len=128):
+        super().__init__(vocab_size, embed_dim, state_dim, depth,
+                         relation_dim, context_dim, max_len)
+        self.cell = GatedTreeCell(relation_dim, state_dim, depth)
+
+
+class TreeLMv2IdLeaf(TreeLMv2):
+    """TreeLMv2 but the encoder cell has an identity leaf (one routing option
+    preserves state verbatim)."""
+    def __init__(self, vocab_size, embed_dim=32, state_dim=128, depth=4,
+                 relation_dim=64, context_dim=64, max_len=128):
+        super().__init__(vocab_size, embed_dim, state_dim, depth,
+                         relation_dim, context_dim, max_len)
+        self.cell = IdentityLeafTreeCell(relation_dim, state_dim, depth)
 
 
 class LSTMLM(nn.Module):
