@@ -9,6 +9,7 @@ from model import (
     ResidualTreeCell, GatedTreeCell, IdentityLeafTreeCell,
     SharedBackboneTreeCell, FiLMTreeCell,
     SharedBackboneSoftTree,
+    ForgetGatedTreeCell, ForgetGatedSharedTreeCell,
 )
 
 
@@ -222,6 +223,26 @@ class TreeLMv2FiLM(TreeLMv2):
         super().__init__(vocab_size, embed_dim, state_dim, depth,
                          relation_dim, context_dim, max_len)
         self.cell = FiLMTreeCell(relation_dim, state_dim, depth)
+
+
+class TreeLMv2Forget(TreeLMv2):
+    """TreeLMv2 with ForgetGatedTreeCell: baseline tree + per-dim forget gate.
+    Tests whether an LSTM-style preservation channel closes the exp12 gap."""
+    def __init__(self, vocab_size, embed_dim=32, state_dim=128, depth=4,
+                 relation_dim=64, context_dim=64, max_len=128):
+        super().__init__(vocab_size, embed_dim, state_dim, depth,
+                         relation_dim, context_dim, max_len)
+        self.cell = ForgetGatedTreeCell(relation_dim, state_dim, depth)
+
+
+class TreeLMv2SharedForget(TreeLMv2):
+    """TreeLMv2 with ForgetGatedSharedTreeCell: shared-backbone tree proposal
+    + per-dim forget gate. Combines exp10 winner with exp14 hypothesis."""
+    def __init__(self, vocab_size, embed_dim=32, state_dim=128, depth=4,
+                 relation_dim=64, context_dim=64, max_len=128):
+        super().__init__(vocab_size, embed_dim, state_dim, depth,
+                         relation_dim, context_dim, max_len)
+        self.cell = ForgetGatedSharedTreeCell(relation_dim, state_dim, depth)
 
 
 class TreeLMv2IdLeaf(TreeLMv2):

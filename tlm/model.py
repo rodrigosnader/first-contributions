@@ -241,6 +241,52 @@ class FiLMTreeCell(nn.Module):
         return self.norm(self.tree(torch.cat([x, state], dim=-1)))
 
 
+class ForgetGatedTreeCell(nn.Module):
+    """LSTM-style per-dim forget gate on top of a tree proposal.
+    state_t = f * state_{t-1} + (1 - f) * LayerNorm(tree(x, state_{t-1}))
+
+    Unlike GatedTreeCell (exp9) the LayerNorm is applied ONLY to the
+    proposal, not to the final gated mix - that preserves the clean
+    state_{t-1} pass-through channel, which is the whole point of the
+    LSTM-style gate and what enables long-context retention.
+
+    Forget bias initialized high so f starts ~0.88 (preserve by default)."""
+
+    def __init__(self, input_dim: int, state_dim: int, depth: int):
+        super().__init__()
+        self.state_dim = state_dim
+        self.tree = SoftTree(input_dim + state_dim, state_dim, depth)
+        self.forget = nn.Linear(input_dim + state_dim, state_dim)
+        self.norm = nn.LayerNorm(state_dim)
+        nn.init.constant_(self.forget.bias, 2.0)
+
+    def forward(self, x: torch.Tensor, state: torch.Tensor) -> torch.Tensor:
+        concat = torch.cat([x, state], dim=-1)
+        f = torch.sigmoid(self.forget(concat))
+        proposed = self.norm(self.tree(concat))
+        return f * state + (1 - f) * proposed
+
+
+class ForgetGatedSharedTreeCell(nn.Module):
+    """Same as ForgetGatedTreeCell but uses SharedBackboneSoftTree for the
+    proposal. Combines the exp10 winner (shared backbone) with the exp14
+    hypothesis (LSTM-style forget gate is needed for long context)."""
+
+    def __init__(self, input_dim: int, state_dim: int, depth: int):
+        super().__init__()
+        self.state_dim = state_dim
+        self.tree = SharedBackboneSoftTree(input_dim + state_dim, state_dim, depth)
+        self.forget = nn.Linear(input_dim + state_dim, state_dim)
+        self.norm = nn.LayerNorm(state_dim)
+        nn.init.constant_(self.forget.bias, 2.0)
+
+    def forward(self, x: torch.Tensor, state: torch.Tensor) -> torch.Tensor:
+        concat = torch.cat([x, state], dim=-1)
+        f = torch.sigmoid(self.forget(concat))
+        proposed = self.norm(self.tree(concat))
+        return f * state + (1 - f) * proposed
+
+
 class IdentityLeafTreeCell(nn.Module):
     """Soft tree where leaf 0 is hardcoded to return state_{t-1} verbatim.
     Other leaves are learned transforms. Routing can literally select
