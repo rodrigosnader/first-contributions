@@ -8,6 +8,7 @@ from model import (
     SoftTree, TreeCell,
     ResidualTreeCell, GatedTreeCell, IdentityLeafTreeCell,
     SharedBackboneTreeCell, FiLMTreeCell,
+    SharedBackboneSoftTree,
 )
 
 
@@ -170,6 +171,47 @@ class TreeLMv2Shared(TreeLMv2):
         super().__init__(vocab_size, embed_dim, state_dim, depth,
                          relation_dim, context_dim, max_len)
         self.cell = SharedBackboneTreeCell(relation_dim, state_dim, depth)
+
+
+class SharedRelationExtractor(nn.Module):
+    def __init__(self, embed_dim, relation_dim, depth):
+        super().__init__()
+        self.tree = SharedBackboneSoftTree(embed_dim, relation_dim, depth)
+        self.norm = nn.LayerNorm(relation_dim)
+    def forward(self, x):
+        return self.norm(self.tree(x))
+
+
+class SharedContextExtractor(nn.Module):
+    def __init__(self, state_dim, context_dim, depth):
+        super().__init__()
+        self.tree = SharedBackboneSoftTree(state_dim, context_dim, depth)
+        self.norm = nn.LayerNorm(context_dim)
+    def forward(self, state):
+        return self.norm(self.tree(state))
+
+
+class SharedTreeDecoderHead(nn.Module):
+    def __init__(self, state_dim, context_dim, vocab_size, depth):
+        super().__init__()
+        self.tree = SharedBackboneSoftTree(state_dim + context_dim, vocab_size, depth)
+    def forward(self, state, context):
+        return self.tree(torch.cat([state, context], dim=-1))
+
+
+class TreeLMv2FullShared(TreeLMv2):
+    """Every SoftTree in the model is replaced with a SharedBackboneSoftTree:
+    relation extractor, encoder cell, context extractor, decoder head. The
+    most aggressive weight-sharing variant; expected to further reduce
+    parameters and overfit beyond TreeLMv2Shared (which only shares in cell)."""
+    def __init__(self, vocab_size, embed_dim=32, state_dim=128, depth=4,
+                 relation_dim=64, context_dim=64, max_len=128):
+        super().__init__(vocab_size, embed_dim, state_dim, depth,
+                         relation_dim, context_dim, max_len)
+        self.relation = SharedRelationExtractor(embed_dim, relation_dim, depth)
+        self.cell = SharedBackboneTreeCell(relation_dim, state_dim, depth)
+        self.context = SharedContextExtractor(state_dim, context_dim, depth)
+        self.head = SharedTreeDecoderHead(state_dim, context_dim, vocab_size, depth)
 
 
 class TreeLMv2FiLM(TreeLMv2):
