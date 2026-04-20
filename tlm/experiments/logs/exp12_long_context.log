@@ -1,0 +1,146 @@
+/usr/local/lib/python3.11/dist-packages/torch/_subclasses/functional_tensor.py:307: UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:84.)
+  cpu = _conversion_method_template(device=torch.device("cpu"))
+
+=== tree_shared_seq64 ===
+=== tree_shared_seq64 ===
+model: TreeLMv2Shared, params: 268,644
+vocab=65, seq_len=64, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.675 acc 0.309 | val BPC 3.078 acc 0.375 | 13s
+epoch   5 | train BPC 2.393 acc 0.499 | val BPC 2.702 acc 0.454 | 64s
+epoch  10 | train BPC 2.170 acc 0.537 | val BPC 2.617 acc 0.479 | 128s
+epoch  15 | train BPC 2.055 acc 0.555 | val BPC 2.641 acc 0.475 | 191s
+epoch  20 | train BPC 1.983 acc 0.566 | val BPC 2.658 acc 0.483 | 254s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+KING RICHARD III:
+Where is broken fortune not have untile and stone.
+
+DUCHESS OF YORK:
+Refuse I seas froth a frood to Debidy: any it, or his does a dish the may be a coural; go to stand yond thy seize
+--- end ---
+
+=== lstm_seq64 ===
+=== lstm_seq64 ===
+model: LSTMLMv2, params: 275,169
+vocab=65, seq_len=64, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.798 acc 0.281 | val BPC 3.225 acc 0.355 | 8s
+epoch   5 | train BPC 2.463 acc 0.487 | val BPC 2.704 acc 0.451 | 38s
+epoch  10 | train BPC 2.130 acc 0.546 | val BPC 2.605 acc 0.482 | 76s
+epoch  15 | train BPC 1.962 acc 0.575 | val BPC 2.635 acc 0.491 | 114s
+epoch  20 | train BPC 1.827 acc 0.600 | val BPC 2.719 acc 0.488 | 151s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+KING EDWARD IV:
+Vouch, our height things, by my brave:
+The brother, the enjoy, therefore me of some haw
+Let me farewell, who dost his things in it
+Whiles, enemy fair so, and Master at the father's as-
+--- end ---
+
+=== tree_shared_seq128 ===
+=== tree_shared_seq128 ===
+model: TreeLMv2Shared, params: 268,644
+vocab=65, seq_len=128, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.651 acc 0.312 | val BPC 3.033 acc 0.384 | 25s
+epoch   5 | train BPC 2.320 acc 0.512 | val BPC 2.600 acc 0.470 | 127s
+epoch  10 | train BPC 2.119 acc 0.547 | val BPC 2.519 acc 0.491 | 252s
+epoch  15 | train BPC 2.031 acc 0.561 | val BPC 2.496 acc 0.498 | 382s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+POLBOW:
+He hath but a many sorry,
+And base and find you say,
+Prinklempish to my grave.
+
+First Murderer: shall hence;
+Where I call the objer;
+Spare in Edward the life:
+we have a trury of what I to make
+--- end ---
+
+=== lstm_seq128 ===
+=== lstm_seq128 ===
+model: LSTMLMv2, params: 275,169
+vocab=65, seq_len=128, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.839 acc 0.276 | val BPC 3.240 acc 0.348 | 16s
+epoch   5 | train BPC 2.408 acc 0.498 | val BPC 2.618 acc 0.461 | 79s
+epoch  10 | train BPC 2.110 acc 0.552 | val BPC 2.473 acc 0.496 | 188s
+epoch  15 | train BPC 1.977 acc 0.575 | val BPC 2.471 acc 0.508 | 354s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+Second Bibing:
+To-great heard it, thou wiltst for so orgon twoes of her with me:
+Leched thee, then the king.
+
+COMINIUS:
+See! the shepherd's deaf it and thee!
+What royal of it?
+
+Clown:
+How may moast ma
+--- end ---
+
+=== tree_shared_seq256 ===
+=== tree_shared_seq256 ===
+model: TreeLMv2Shared, params: 268,644
+vocab=65, seq_len=256, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.603 acc 0.320 | val BPC 2.958 acc 0.395 | 101s
+epoch   5 | train BPC 2.236 acc 0.529 | val BPC 2.495 acc 0.491 | 512s
+epoch  10 | train BPC 2.050 acc 0.561 | val BPC 2.400 acc 0.513 | 890s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+KING RICHARD III:
+How dares:
+Be our weep with you; what you are behind. We have see?
+
+NORFOLK:
+Alas, my mood you shall not she is so, he shall not what you steak thou with no make you, Margarian and b
+--- end ---
+
+=== lstm_seq256 ===
+=== lstm_seq256 ===
+model: LSTMLMv2, params: 275,169
+vocab=65, seq_len=256, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.812 acc 0.279 | val BPC 3.185 acc 0.360 | 33s
+epoch   5 | train BPC 2.323 acc 0.515 | val BPC 2.512 acc 0.484 | 158s
+epoch  10 | train BPC 2.040 acc 0.566 | val BPC 2.354 acc 0.522 | 315s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+Shepherd:
+What you the fervice me not
+Noth high between and cloud thee sking.
+
+GLOUCESTER:
+Prive, till OF YORK:
+I do hear it, say I strange, in the hellow,
+The reason of itself anothers!
+
+VOLUMNIA:
+Wh
+--- end ---
+
+=== SUMMARY ===
+ seq_len model              params   best_vbpc    val_acc
+      64 tree_shared       268,644       2.617      0.483
+      64 lstm              275,169       2.605      0.491
+     128 tree_shared       268,644       2.496      0.498
+     128 lstm              275,169       2.471      0.508
+     256 tree_shared       268,644       2.400      0.513
+     256 lstm              275,169       2.354      0.522
+
+=== TREE vs LSTM delta per seq_len ===
+  seq_len=64: tree 2.617 vs lstm 2.605 -> delta +0.013
+  seq_len=128: tree 2.496 vs lstm 2.471 -> delta +0.025
+  seq_len=256: tree 2.400 vs lstm 2.354 -> delta +0.047
