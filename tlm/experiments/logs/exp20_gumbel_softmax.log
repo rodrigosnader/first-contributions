@@ -1,0 +1,20 @@
+TreeLMv2GumbelShared, params: 268,644
+vocab=65, seq_len=64, state=128, depth=3
+epoch  1  tau=1.000  train_bpc 3.797  val_bpc 3.174  val_acc 0.361  23s
+epoch  5  tau=0.811  train_bpc 2.512  val_bpc 2.732  val_acc 0.441  123s
+epoch 10  tau=0.481  train_bpc 2.293  val_bpc 2.691  val_acc 0.462  284s
+epoch 15  tau=0.285  train_bpc 2.212  val_bpc 2.646  val_acc 0.473  408s
+epoch 20  tau=0.169  train_bpc 2.225  val_bpc 2.644  val_acc 0.469  510s
+epoch 25  tau=0.100  train_bpc 2.164  val_bpc 2.661  val_acc 0.466  609s
+
+=== Gumbel + annealing final eval ===
+routing confidence (|p-0.5|*2, 1=committed): 0.998
+soft (tau=0.1): BPC 2.661  acc 0.466
+hard (_hard):   BPC 3.606  acc 0.357
+acc drop:  +0.109
+BPC delta: +0.945
+
+=== REFERENCE (exp15, entropy annealing, shared_forget) ===
+  soft BPC 2.933, hard BPC 5.041, gap +2.11
+=== REFERENCE (exp13, no annealing, shared) ===
+  soft BPC 2.662, hard BPC 5.410, gap +2.75
