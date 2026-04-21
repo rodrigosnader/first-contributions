@@ -1,0 +1,31 @@
+
+=== LSTMLMv2 on WikiText-2 ===
+=== LSTMLMv2 ===
+model: LSTMLMv2, params: 762,354
+vocab=178, seq_len=128, state=256
+random baseline BPC: 7.476
+epoch   1 | train BPC 3.123 acc 0.399 | val BPC 2.411 acc 0.517 | 189s
+epoch   5 | train BPC 1.954 acc 0.599 | val BPC 1.928 acc 0.609 | 930s
+epoch  10 | train BPC 1.734 acc 0.638 | val BPC 1.901 acc 0.619 | 1853s
+epoch  15 | train BPC 1.594 acc 0.664 | val BPC 1.963 acc 0.618 | 2772s
+epoch  20 | train BPC 1.488 acc 0.683 | val BPC 2.055 acc 0.611 | 3686s
+
+(skipping generation: 'R')
+
+=== TransformerLM on WikiText-2 ===
+=== TransformerLM ===
+model: TransformerLM, params: 723,890
+vocab=178, seq_len=128, state=256
+random baseline BPC: 7.476
+epoch   1 | train BPC 3.600 acc 0.304 | val BPC 3.091 acc 0.380 | 15s
+epoch   5 | train BPC 2.286 acc 0.536 | val BPC 2.169 acc 0.562 | 62s
+epoch  10 | train BPC 1.941 acc 0.601 | val BPC 2.027 acc 0.590 | 121s
+epoch  15 | train BPC 1.772 acc 0.632 | val BPC 2.034 acc 0.593 | 181s
+epoch  20 | train BPC 1.645 acc 0.655 | val BPC 2.098 acc 0.589 | 240s
+
+(skipping generation: 'R')
+
+=== SUMMARY (WikiText-2, byte-level, ~700k params) ===
+model                          params   best_vbpc    val_acc     time
+LSTMLMv2                      762,354       1.901      0.619    3686s
+TransformerLM                 723,890       2.027      0.593     240s
