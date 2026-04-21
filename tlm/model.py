@@ -16,12 +16,16 @@ class SoftTree(nn.Module):
         self.router = nn.Linear(input_dim, self.n_internal)
         self.leaves = nn.Linear(input_dim, self.n_leaves * output_dim)
         self._hard = False
+        # last-computed routing probs (set in forward), exposed for entropy
+        # annealing regularizers. Not a buffer - it's per-forward state.
+        self._last_routing_probs = None
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         if self._hard:
             return self.hard_forward(x)
         batch = x.shape[0]
         routing_probs = torch.sigmoid(self.router(x))  # (B, n_internal), prob of going LEFT
+        self._last_routing_probs = routing_probs
 
         node_probs = torch.ones(batch, 1, device=x.device, dtype=x.dtype)
         idx = 0
@@ -132,12 +136,16 @@ class SharedBackboneSoftTree(nn.Module):
         self.shared = nn.Linear(input_dim, self.hidden_dim)
         self.leaves = nn.Linear(self.hidden_dim, self.n_leaves * output_dim)
         self._hard = False  # when True, hard_forward is used (no soft mixing)
+        # last-computed routing probs (set in forward), exposed for entropy
+        # annealing regularizers. Not a buffer - it's per-forward state.
+        self._last_routing_probs = None
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         if self._hard:
             return self.hard_forward(x)
         batch = x.shape[0]
         routing_probs = torch.sigmoid(self.router(x))
+        self._last_routing_probs = routing_probs
 
         node_probs = torch.ones(batch, 1, device=x.device, dtype=x.dtype)
         idx = 0

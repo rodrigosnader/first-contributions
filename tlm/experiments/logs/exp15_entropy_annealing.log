@@ -1,0 +1,159 @@
+/usr/local/lib/python3.11/dist-packages/torch/_subclasses/functional_tensor.py:307: UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:84.)
+  cpu = _conversion_method_template(device=torch.device("cpu"))
+
+============================================================
+shared  (TreeLMv2Shared)
+============================================================
+
+--- target entropy weight = 0.0 ---
+=== shared_ent0.0 ===
+model: TreeLMv2Shared, params: 268,644
+vocab=65, seq_len=64, state=128
+entropy target weight: 0.0
+random baseline BPC: 6.022
+epoch   1 | w=0.000 | train BPC 3.675 acc 0.309 ent 0.564 | val BPC 3.078 acc 0.375 | 15s
+epoch   5 | w=0.000 | train BPC 2.393 acc 0.499 ent 0.451 | val BPC 2.702 acc 0.454 | 67s
+epoch  10 | w=0.000 | train BPC 2.170 acc 0.537 ent 0.420 | val BPC 2.617 acc 0.479 | 131s
+epoch  15 | w=0.000 | train BPC 2.055 acc 0.555 ent 0.407 | val BPC 2.641 acc 0.475 | 195s
+epoch  20 | w=0.000 | train BPC 1.983 acc 0.566 ent 0.399 | val BPC 2.658 acc 0.483 | 257s
+epoch  25 | w=0.000 | train BPC 1.926 acc 0.577 ent 0.392 | val BPC 2.662 acc 0.484 | 322s
+
+--- shared_ent0.0 hard-inference report ---
+routing |logit| avg: 2.208  (higher = more committed)
+soft: BPC 2.662  acc 0.484
+hard: BPC 5.410  acc 0.199
+acc drop: +0.286  bpc delta: +2.749
+bs= 1: soft 237.31ms/batch, hard 308.67ms/batch, speedup 0.77x
+bs=32: soft 61.36ms/batch, hard 80.45ms/batch, speedup 0.76x
+
+--- target entropy weight = 0.05 ---
+=== shared_ent0.05 ===
+model: TreeLMv2Shared, params: 268,644
+vocab=65, seq_len=64, state=128
+entropy target weight: 0.05
+random baseline BPC: 6.022
+epoch   1 | w=0.000 | train BPC 3.675 acc 0.309 ent 0.564 | val BPC 3.078 acc 0.375 | 13s
+epoch   5 | w=0.000 | train BPC 2.393 acc 0.499 ent 0.451 | val BPC 2.702 acc 0.454 | 64s
+epoch  10 | w=0.017 | train BPC 2.170 acc 0.537 ent 0.409 | val BPC 2.618 acc 0.480 | 128s
+epoch  15 | w=0.033 | train BPC 2.057 acc 0.555 ent 0.380 | val BPC 2.645 acc 0.475 | 193s
+epoch  20 | w=0.050 | train BPC 1.982 acc 0.566 ent 0.356 | val BPC 2.663 acc 0.483 | 256s
+epoch  25 | w=0.050 | train BPC 1.929 acc 0.576 ent 0.335 | val BPC 2.675 acc 0.484 | 325s
+
+--- shared_ent0.05 hard-inference report ---
+routing |logit| avg: 2.795  (higher = more committed)
+soft: BPC 2.675  acc 0.484
+hard: BPC 5.180  acc 0.219
+acc drop: +0.265  bpc delta: +2.505
+bs= 1: soft 241.75ms/batch, hard 313.51ms/batch, speedup 0.77x
+bs=32: soft 81.01ms/batch, hard 88.98ms/batch, speedup 0.91x
+
+--- target entropy weight = 0.1 ---
+=== shared_ent0.1 ===
+model: TreeLMv2Shared, params: 268,644
+vocab=65, seq_len=64, state=128
+entropy target weight: 0.1
+random baseline BPC: 6.022
+epoch   1 | w=0.000 | train BPC 3.675 acc 0.309 ent 0.564 | val BPC 3.078 acc 0.375 | 15s
+epoch   5 | w=0.000 | train BPC 2.393 acc 0.499 ent 0.451 | val BPC 2.702 acc 0.454 | 76s
+epoch  10 | w=0.033 | train BPC 2.170 acc 0.537 ent 0.400 | val BPC 2.618 acc 0.479 | 151s
+epoch  15 | w=0.067 | train BPC 2.058 acc 0.554 ent 0.359 | val BPC 2.648 acc 0.475 | 226s
+epoch  20 | w=0.100 | train BPC 1.986 acc 0.565 ent 0.322 | val BPC 2.669 acc 0.482 | 299s
+epoch  25 | w=0.100 | train BPC 1.932 acc 0.575 ent 0.292 | val BPC 2.669 acc 0.484 | 374s
+
+--- shared_ent0.1 hard-inference report ---
+routing |logit| avg: 3.256  (higher = more committed)
+soft: BPC 2.669  acc 0.484
+hard: BPC 5.060  acc 0.231
+acc drop: +0.253  bpc delta: +2.391
+bs= 1: soft 233.74ms/batch, hard 336.38ms/batch, speedup 0.69x
+bs=32: soft 64.04ms/batch, hard 76.29ms/batch, speedup 0.84x
+
+============================================================
+sharedforget  (TreeLMv2SharedForget)
+============================================================
+
+--- target entropy weight = 0.0 ---
+=== sharedforget_ent0.0 ===
+model: TreeLMv2SharedForget, params: 293,348
+vocab=65, seq_len=64, state=128
+entropy target weight: 0.0
+random baseline BPC: 6.022
+epoch   1 | w=0.000 | train BPC 4.116 acc 0.239 ent 0.574 | val BPC 3.291 acc 0.347 | 15s
+epoch   5 | w=0.000 | train BPC 2.363 acc 0.505 ent 0.454 | val BPC 2.644 acc 0.467 | 79s
+epoch  10 | w=0.000 | train BPC 2.033 acc 0.564 ent 0.415 | val BPC 2.621 acc 0.483 | 159s
+epoch  15 | w=0.000 | train BPC 1.850 acc 0.597 ent 0.397 | val BPC 2.679 acc 0.482 | 237s
+epoch  20 | w=0.000 | train BPC 1.715 acc 0.622 ent 0.385 | val BPC 2.836 acc 0.471 | 315s
+epoch  25 | w=0.000 | train BPC 1.608 acc 0.643 ent 0.377 | val BPC 2.946 acc 0.465 | 393s
+
+--- sharedforget_ent0.0 hard-inference report ---
+routing |logit| avg: 2.404  (higher = more committed)
+soft: BPC 2.946  acc 0.465
+hard: BPC 5.494  acc 0.223
+acc drop: +0.242  bpc delta: +2.549
+bs= 1: soft 240.73ms/batch, hard 419.56ms/batch, speedup 0.57x
+bs=32: soft 74.08ms/batch, hard 78.19ms/batch, speedup 0.95x
+
+--- target entropy weight = 0.05 ---
+=== sharedforget_ent0.05 ===
+model: TreeLMv2SharedForget, params: 293,348
+vocab=65, seq_len=64, state=128
+entropy target weight: 0.05
+random baseline BPC: 6.022
+epoch   1 | w=0.000 | train BPC 4.116 acc 0.239 ent 0.574 | val BPC 3.291 acc 0.347 | 16s
+epoch   5 | w=0.000 | train BPC 2.363 acc 0.505 ent 0.454 | val BPC 2.644 acc 0.467 | 78s
+epoch  10 | w=0.017 | train BPC 2.033 acc 0.564 ent 0.405 | val BPC 2.621 acc 0.483 | 157s
+epoch  15 | w=0.033 | train BPC 1.851 acc 0.597 ent 0.371 | val BPC 2.683 acc 0.481 | 235s
+epoch  20 | w=0.050 | train BPC 1.718 acc 0.621 ent 0.344 | val BPC 2.823 acc 0.473 | 312s
+epoch  25 | w=0.050 | train BPC 1.611 acc 0.642 ent 0.323 | val BPC 2.948 acc 0.465 | 389s
+
+--- sharedforget_ent0.05 hard-inference report ---
+routing |logit| avg: 2.931  (higher = more committed)
+soft: BPC 2.948  acc 0.465
+hard: BPC 5.249  acc 0.238
+acc drop: +0.227  bpc delta: +2.301
+bs= 1: soft 247.97ms/batch, hard 424.14ms/batch, speedup 0.58x
+bs=32: soft 69.24ms/batch, hard 79.79ms/batch, speedup 0.87x
+
+--- target entropy weight = 0.1 ---
+=== sharedforget_ent0.1 ===
+model: TreeLMv2SharedForget, params: 293,348
+vocab=65, seq_len=64, state=128
+entropy target weight: 0.1
+random baseline BPC: 6.022
+epoch   1 | w=0.000 | train BPC 4.116 acc 0.239 ent 0.574 | val BPC 3.291 acc 0.347 | 15s
+epoch   5 | w=0.000 | train BPC 2.363 acc 0.505 ent 0.454 | val BPC 2.644 acc 0.467 | 76s
+epoch  10 | w=0.033 | train BPC 2.033 acc 0.564 ent 0.396 | val BPC 2.622 acc 0.482 | 150s
+epoch  15 | w=0.067 | train BPC 1.851 acc 0.597 ent 0.350 | val BPC 2.680 acc 0.482 | 229s
+epoch  20 | w=0.100 | train BPC 1.722 acc 0.621 ent 0.311 | val BPC 2.830 acc 0.473 | 306s
+epoch  25 | w=0.100 | train BPC 1.617 acc 0.641 ent 0.283 | val BPC 2.933 acc 0.470 | 384s
+
+--- sharedforget_ent0.1 hard-inference report ---
+routing |logit| avg: 3.395  (higher = more committed)
+soft: BPC 2.933  acc 0.470
+hard: BPC 5.041  acc 0.254
+acc drop: +0.216  bpc delta: +2.107
+bs= 1: soft 247.08ms/batch, hard 434.06ms/batch, speedup 0.57x
+bs=32: soft 65.87ms/batch, hard 79.26ms/batch, speedup 0.83x
+
+=== SUMMARY: entropy annealing vs hard-inference gap ===
+model           ent_w   conf  soft_bpc  hard_bpc     gap  soft_acc  hard_acc   b1_soft   b1_hard    spd
+shared           0.00   2.21     2.662     5.410  +2.749     0.484     0.199    237.31    308.67  0.77x
+shared           0.05   2.79     2.675     5.180  +2.505     0.484     0.219    241.75    313.51  0.77x
+shared           0.10   3.26     2.669     5.060  +2.391     0.484     0.231    233.74    336.38  0.69x
+sharedforget     0.00   2.40     2.946     5.494  +2.549     0.465     0.223    240.73    419.56  0.57x
+sharedforget     0.05   2.93     2.948     5.249  +2.301     0.465     0.238    247.97    424.14  0.58x
+sharedforget     0.10   3.40     2.933     5.041  +2.107     0.470     0.254    247.08    434.06  0.57x
+
+=== hypothesis check ===
+(1) routing |logit| should grow MUCH with entropy_weight target
+(2) hard_bpc - soft_bpc gap should shrink toward 0 with target=0.1
+
+  shared:
+    target=0.00  |logit|=2.21  gap=+2.749
+    target=0.05  |logit|=2.79  gap=+2.505
+    target=0.10  |logit|=3.26  gap=+2.391
+
+  sharedforget:
+    target=0.00  |logit|=2.40  gap=+2.549
+    target=0.05  |logit|=2.93  gap=+2.301
+    target=0.10  |logit|=3.40  gap=+2.107
