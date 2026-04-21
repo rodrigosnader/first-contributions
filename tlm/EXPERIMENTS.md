@@ -35,6 +35,9 @@ Commits tagged with exp number.
 | 20 | Gumbel-sigmoid + tau annealing | **3x improvement**: routing confidence 0.998, soft BPC preserved (2.66), hard BPC 3.61 (vs 5.41 exp13). Acc drop -11pp (vs -27pp). Gap +0.945 BPC still remains but 3x smaller |
 | 21 | Scaled TLM (state=256) vs LSTM matched 700k params, seq=128 | LSTM wins: 2.383 vs tree 2.426 (delta +0.043). Reverses exp14 — tree advantage was small-state+long-seq specific |
 | 22 | Transformer (~695k) same regime | **Transformer LOSES to both**: vbpc 2.583 (LSTM 2.383, tree 2.426). But 14x faster to train (attention parallelizes). Vanilla transformer, no tuning - regime is small-data/small-params where RNN inductive bias helps |
+| 23 | WikiText-2 10MB, 3-way | LSTM 1.901 > Tree 1.926 > Transformer 2.027 > Reg-Transformer 1.994. More data shrinks transformer gap but doesn't flip ranking. Tree ~tied with LSTM (+0.025 BPC) |
+| 24/24b | Transformer with dropout+warmup+cosine (exp24b no-LS) | Regularized transformer: 1.994 BPC (vs vanilla 2.027). 0.03 BPC improvement, still loses to LSTM and Tree |
+| 25 | TLM hard vs Transformer-with-KV-cache inference speed | **Tree 1.32x-2.12x faster than transformer KV** at gen lengths 64-1024, small/medium/large configs. Tree rate constant, transformer decays with context. Even at matched-param large config tree wins AND is smaller |
 
 ## Best-so-far configuration
 
@@ -56,7 +59,8 @@ Commits tagged with exp number.
 | Tree wins at long context | ✅ with forget gate; gap grows (exp14) |
 | Train soft, infer sparse works | ⚠️ Gumbel+annealing cuts gap 3x (exp20) - usable but not perfect |
 | Algorithmic speedup exists | ✅ 3.9x fewer FLOPs (exp16), **4.16x numpy wall-clock (exp18)** |
-| Speedup realizable in PyTorch | ✅ **at state_dim >= 1024 hits 3.55-3.92x** (exp19) |
+| Speedup realizable in PyTorch | ✅ **at state_dim >= 1024 hits 3.55-3.92x vs LSTM** (exp19), **1.32-2.12x vs Transformer KV** (exp25) |
+| Competitive quality vs Transformer at 10MB | ✅ Tree 1.926 vs Transformer 1.994 BPC (exp23-24b) |
 
 ## Open questions / planned experiments
 
