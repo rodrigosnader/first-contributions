@@ -1,0 +1,14 @@
+=== transformer_reg_nosmooth ===
+params: 723,890  dropout=0.1  label_smoothing=0.0
+epoch   1  lr 0.0015  train_bpc 4.535  val_bpc 3.423  val_acc 0.326  50s
+epoch   5  lr 0.0028  train_bpc 2.676  val_bpc 2.379  val_acc 0.518  236s
+epoch  10  lr 0.0018  train_bpc 2.346  val_bpc 2.107  val_acc 0.570  467s
+epoch  15  lr 0.0005  train_bpc 2.205  val_bpc 2.013  val_acc 0.592  693s
+epoch  20  lr 0.0000  train_bpc 2.154  val_bpc 1.994  val_acc 0.595  918s
+
+=== SUMMARY ===
+transformer_reg_nosmooth       params=723,890  best_vbpc=1.994  best_val_acc=0.595  time=918s
+
+--- exp23 vanilla transformer:  vbpc=2.027 acc=0.593 ---
+--- exp23 LSTMLMv2:              vbpc=1.901 acc=0.619 ---
+--- exp23 TreeLMv2SharedForget:  vbpc=1.926 acc=0.613 ---
