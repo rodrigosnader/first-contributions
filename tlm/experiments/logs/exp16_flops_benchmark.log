@@ -1,0 +1,16 @@
+/usr/local/lib/python3.11/dist-packages/torch/_subclasses/functional_tensor.py:307: UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:84.)
+  cpu = _conversion_method_template(device=torch.device("cpu"))
+Per-step FLOPs at state=128, input=64, depth=3:
+  LSTM:                  98,304
+  Tree soft:            197,952   (vs LSTM: 2.01x)
+  Tree hard:             25,152   (vs LSTM: 3.91x faster)
+  Shared-tree soft:      79,168   (vs LSTM: 0.81x)
+  Shared-tree hard:      21,056   (vs LSTM: 4.67x faster)
+
+Wall-clock per step, batch=1, torch.set_num_threads(1):
+  LSTM:        34.15 us
+  Soft:        86.92 us  (0.39x vs LSTM)
+  Hard:        35.48 us  (0.96x vs LSTM)
+  hard / soft speedup: 2.45x
+  theoretical hard / soft speedup: 7.87x
+  theoretical LSTM / hard speedup: 3.91x
