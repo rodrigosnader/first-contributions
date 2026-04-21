@@ -1,0 +1,310 @@
+/usr/local/lib/python3.11/dist-packages/torch/_subclasses/functional_tensor.py:307: UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:84.)
+  cpu = _conversion_method_template(device=torch.device("cpu"))
+
+========================================
+seq_len=64
+========================================
+
+--- shared (no forget) @ seq_len=64 ---
+=== shared_no_forget_seq64 ===
+model: TreeLMv2Shared, params: 268,644
+vocab=65, seq_len=64, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.675 acc 0.309 | val BPC 3.078 acc 0.375 | 20s
+epoch   5 | train BPC 2.393 acc 0.499 | val BPC 2.702 acc 0.454 | 95s
+epoch  10 | train BPC 2.170 acc 0.537 | val BPC 2.617 acc 0.479 | 188s
+epoch  15 | train BPC 2.055 acc 0.555 | val BPC 2.641 acc 0.475 | 279s
+epoch  20 | train BPC 1.983 acc 0.566 | val BPC 2.658 acc 0.483 | 372s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+KING RICHARD III:
+Where is broken fortune not have untile and stone.
+
+DUCHESS OF YORK:
+Refuse I seas froth a frood to Debidy: any it, or his does a dish the may be a coural; go to stand yond thy seize
+--- end ---
+
+--- baseline + forget gate @ seq_len=64 ---
+=== baseline__forget_gate_seq64 ===
+model: TreeLMv2Forget, params: 412,068
+vocab=65, seq_len=64, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 4.128 acc 0.239 | val BPC 3.327 acc 0.345 | 19s
+epoch   5 | train BPC 2.308 acc 0.515 | val BPC 2.598 acc 0.471 | 98s
+epoch  10 | train BPC 1.896 acc 0.591 | val BPC 2.639 acc 0.486 | 197s
+epoch  15 | train BPC 1.623 acc 0.644 | val BPC 2.886 acc 0.468 | 294s
+epoch  20 | train BPC 1.417 acc 0.686 | val BPC 3.188 acc 0.456 | 388s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+ESCALUS:
+I would they not sanc so hape my and with me?
+
+LUCIO:
+Dispatcent, his actirent his soul.
+
+PARIS:
+These goes well then, here ore's a specia
+Aying of life of it.
+
+MAMILLIUS:
+No, my Lies that gr
+--- end ---
+
+--- shared + forget gate @ seq_len=64 ---
+=== shared__forget_gate_seq64 ===
+model: TreeLMv2SharedForget, params: 293,348
+vocab=65, seq_len=64, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 4.116 acc 0.239 | val BPC 3.291 acc 0.347 | 20s
+epoch   5 | train BPC 2.363 acc 0.505 | val BPC 2.644 acc 0.467 | 99s
+epoch  10 | train BPC 2.033 acc 0.564 | val BPC 2.621 acc 0.483 | 199s
+epoch  15 | train BPC 1.850 acc 0.597 | val BPC 2.679 acc 0.482 | 299s
+epoch  20 | train BPC 1.715 acc 0.622 | val BPC 2.836 acc 0.471 | 398s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+ISABELLA:
+O, so I never godged, and the people in easting anguit.
+
+DORCAS:
+Whither?
+
+DOPCARD:
+Now which the least thou madest him being proved wilt
+Tho hasbow lover him be borne,
+Have down he stand a 
+--- end ---
+
+--- LSTM reference @ seq_len=64 ---
+=== LSTM_reference_seq64 ===
+model: LSTMLMv2, params: 275,169
+vocab=65, seq_len=64, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.798 acc 0.281 | val BPC 3.225 acc 0.355 | 12s
+epoch   5 | train BPC 2.463 acc 0.487 | val BPC 2.704 acc 0.451 | 59s
+epoch  10 | train BPC 2.130 acc 0.546 | val BPC 2.605 acc 0.482 | 118s
+epoch  15 | train BPC 1.962 acc 0.575 | val BPC 2.635 acc 0.491 | 176s
+epoch  20 | train BPC 1.827 acc 0.600 | val BPC 2.719 acc 0.488 | 235s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+KING EDWARD IV:
+Vouch, our height things, by my brave:
+The brother, the enjoy, therefore me of some haw
+Let me farewell, who dost his things in it
+Whiles, enemy fair so, and Master at the father's as-
+--- end ---
+
+========================================
+seq_len=128
+========================================
+
+--- shared (no forget) @ seq_len=128 ---
+=== shared_no_forget_seq128 ===
+model: TreeLMv2Shared, params: 268,644
+vocab=65, seq_len=128, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.651 acc 0.312 | val BPC 3.033 acc 0.384 | 39s
+epoch   5 | train BPC 2.320 acc 0.512 | val BPC 2.600 acc 0.470 | 191s
+epoch  10 | train BPC 2.119 acc 0.547 | val BPC 2.519 acc 0.491 | 382s
+epoch  15 | train BPC 2.031 acc 0.561 | val BPC 2.496 acc 0.498 | 580s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+POLBOW:
+He hath but a many sorry,
+And base and find you say,
+Prinklempish to my grave.
+
+First Murderer: shall hence;
+Where I call the objer;
+Spare in Edward the life:
+we have a trury of what I to make
+--- end ---
+
+--- baseline + forget gate @ seq_len=128 ---
+=== baseline__forget_gate_seq128 ===
+model: TreeLMv2Forget, params: 412,068
+vocab=65, seq_len=128, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 4.151 acc 0.235 | val BPC 3.313 acc 0.343 | 42s
+epoch   5 | train BPC 2.248 acc 0.528 | val BPC 2.516 acc 0.484 | 204s
+epoch  10 | train BPC 1.910 acc 0.588 | val BPC 2.457 acc 0.507 | 404s
+epoch  15 | train BPC 1.719 acc 0.626 | val BPC 2.578 acc 0.500 | 603s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+Provost:
+The consorted no time to undergo preven's spiling.
+
+FRIAR THOMNS:
+I'll me to my lord:
+My chiling flesh.
+
+HENRY BOLINGBROKE:
+Marry, I here is it bow in our foulty over I:
+And his wife, my lord
+--- end ---
+
+--- shared + forget gate @ seq_len=128 ---
+=== shared__forget_gate_seq128 ===
+model: TreeLMv2SharedForget, params: 293,348
+vocab=65, seq_len=128, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 4.109 acc 0.240 | val BPC 3.274 acc 0.346 | 43s
+epoch   5 | train BPC 2.289 acc 0.521 | val BPC 2.551 acc 0.480 | 216s
+epoch  10 | train BPC 2.018 acc 0.567 | val BPC 2.485 acc 0.500 | 431s
+epoch  15 | train BPC 1.884 acc 0.591 | val BPC 2.492 acc 0.504 | 641s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+POMPEY:
+My lord maid was the green to end. Why, see
+What I would I cermity him a capial not
+To flowers the peesidity here people,
+And take his currence is a tongue and squirness
+Take me a-dying necess
+--- end ---
+
+--- LSTM reference @ seq_len=128 ---
+=== LSTM_reference_seq128 ===
+model: LSTMLMv2, params: 275,169
+vocab=65, seq_len=128, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.839 acc 0.276 | val BPC 3.240 acc 0.348 | 25s
+epoch   5 | train BPC 2.408 acc 0.498 | val BPC 2.618 acc 0.461 | 122s
+epoch  10 | train BPC 2.110 acc 0.552 | val BPC 2.473 acc 0.496 | 238s
+epoch  15 | train BPC 1.977 acc 0.575 | val BPC 2.471 acc 0.508 | 353s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+Second Bibing:
+To-great heard it, thou wiltst for so orgon twoes of her with me:
+Leched thee, then the king.
+
+COMINIUS:
+See! the shepherd's deaf it and thee!
+What royal of it?
+
+Clown:
+How may moast ma
+--- end ---
+
+========================================
+seq_len=256
+========================================
+
+--- shared (no forget) @ seq_len=256 ---
+=== shared_no_forget_seq256 ===
+model: TreeLMv2Shared, params: 268,644
+vocab=65, seq_len=256, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.603 acc 0.320 | val BPC 2.958 acc 0.395 | 81s
+epoch   5 | train BPC 2.236 acc 0.529 | val BPC 2.495 acc 0.491 | 402s
+epoch  10 | train BPC 2.050 acc 0.561 | val BPC 2.400 acc 0.513 | 808s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+KING RICHARD III:
+How dares:
+Be our weep with you; what you are behind. We have see?
+
+NORFOLK:
+Alas, my mood you shall not she is so, he shall not what you steak thou with no make you, Margarian and b
+--- end ---
+
+--- baseline + forget gate @ seq_len=256 ---
+=== baseline__forget_gate_seq256 ===
+model: TreeLMv2Forget, params: 412,068
+vocab=65, seq_len=256, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 4.177 acc 0.229 | val BPC 3.315 acc 0.339 | 84s
+epoch   5 | train BPC 2.174 acc 0.542 | val BPC 2.402 acc 0.506 | 421s
+epoch  10 | train BPC 1.866 acc 0.598 | val BPC 2.337 acc 0.531 | 842s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+VOLUMNIA:
+So this your greater thine in a tongue
+Whose world of thy lands of answer their bend
+To sin, lest I will not.
+
+HORTENSIO:
+You may please I bear again man of him.
+
+KING HENRY VI:
+It is none c
+--- end ---
+
+--- shared + forget gate @ seq_len=256 ---
+=== shared__forget_gate_seq256 ===
+model: TreeLMv2SharedForget, params: 293,348
+vocab=65, seq_len=256, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 4.112 acc 0.241 | val BPC 3.230 acc 0.356 | 89s
+epoch   5 | train BPC 2.218 acc 0.534 | val BPC 2.456 acc 0.497 | 447s
+epoch  10 | train BPC 1.953 acc 0.581 | val BPC 2.357 acc 0.525 | 893s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+Ghost you?
+
+JULIET:
+Ay, one that mide, thou did seed him, let us shake yourselves:
+'Tis adwarried to see a the wide the dads
+Compant with things are further aunt's,
+And were a law of return threes fro
+--- end ---
+
+--- LSTM reference @ seq_len=256 ---
+=== LSTM_reference_seq256 ===
+model: LSTMLMv2, params: 275,169
+vocab=65, seq_len=256, state=128
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.812 acc 0.279 | val BPC 3.185 acc 0.360 | 49s
+epoch   5 | train BPC 2.323 acc 0.515 | val BPC 2.512 acc 0.484 | 252s
+epoch  10 | train BPC 2.040 acc 0.566 | val BPC 2.354 acc 0.522 | 494s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+Shepherd:
+What you the fervice me not
+Noth high between and cloud thee sking.
+
+GLOUCESTER:
+Prive, till OF YORK:
+I do hear it, say I strange, in the hellow,
+The reason of itself anothers!
+
+VOLUMNIA:
+Wh
+--- end ---
+
+=== SUMMARY ===
+ seq_len model                            params   best_vbpc    val_acc
+      64 shared (no forget)              268,644       2.617      0.483
+      64 baseline + forget gate          412,068       2.598      0.486
+      64 shared + forget gate            293,348       2.621      0.483
+      64 LSTM reference                  275,169       2.605      0.491
+     128 shared (no forget)              268,644       2.496      0.498
+     128 baseline + forget gate          412,068       2.457      0.507
+     128 shared + forget gate            293,348       2.485      0.504
+     128 LSTM reference                  275,169       2.471      0.508
+     256 shared (no forget)              268,644       2.400      0.513
+     256 baseline + forget gate          412,068       2.337      0.531
+     256 shared + forget gate            293,348       2.357      0.525
+     256 LSTM reference                  275,169       2.354      0.522
+
+=== TREE vs LSTM delta per seq_len (best_val_bpc - lstm_best_val_bpc) ===
+(negative = tree wins)
+  seq_len= 64  shared (no forget)            delta=+0.013
+  seq_len= 64  baseline + forget gate        delta=-0.007
+  seq_len= 64  shared + forget gate          delta=+0.017
+  seq_len=128  shared (no forget)            delta=+0.025
+  seq_len=128  baseline + forget gate        delta=-0.013
+  seq_len=128  shared + forget gate          delta=+0.015
+  seq_len=256  shared (no forget)            delta=+0.047
+  seq_len=256  baseline + forget gate        delta=-0.017
+  seq_len=256  shared + forget gate          delta=+0.004
