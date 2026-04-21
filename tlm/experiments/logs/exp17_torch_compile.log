@@ -1,0 +1,24 @@
+/usr/local/lib/python3.11/dist-packages/torch/_subclasses/functional_tensor.py:307: UserWarning: Failed to initialize NumPy: No module named 'numpy' (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:84.)
+  cpu = _conversion_method_template(device=torch.device("cpu"))
+W0421 03:39:25.529000 1652 torch/_dynamo/variables/tensor.py:1379] [2/0] Graph break from `Tensor.item()`, consider setting:
+W0421 03:39:25.529000 1652 torch/_dynamo/variables/tensor.py:1379] [2/0]     torch._dynamo.config.capture_scalar_outputs = True
+W0421 03:39:25.529000 1652 torch/_dynamo/variables/tensor.py:1379] [2/0] or:
+W0421 03:39:25.529000 1652 torch/_dynamo/variables/tensor.py:1379] [2/0]     env TORCHDYNAMO_CAPTURE_SCALAR_OUTPUTS=1
+W0421 03:39:25.529000 1652 torch/_dynamo/variables/tensor.py:1379] [2/0] to include these operations in the captured graph.
+W0421 03:39:25.529000 1652 torch/_dynamo/variables/tensor.py:1379] [2/0] 
+W0421 03:39:25.529000 1652 torch/_dynamo/variables/tensor.py:1379] [2/0] Graph break: from user code at:
+W0421 03:39:25.529000 1652 torch/_dynamo/variables/tensor.py:1379] [2/0]   File "/home/user/first-contributions/tlm/experiments/exp16_flops_benchmark.py", line 72, in forward
+W0421 03:39:25.529000 1652 torch/_dynamo/variables/tensor.py:1379] [2/0]     if logit.item() > 0:
+W0421 03:39:25.529000 1652 torch/_dynamo/variables/tensor.py:1379] [2/0] 
+W0421 03:39:25.529000 1652 torch/_dynamo/variables/tensor.py:1379] [2/0] 
+
+Wall-clock per step, batch=1, single thread:
+op               eager us   compiled us   compile speedup
+LSTM                38.36         59.11             0.65x
+Tree soft          106.29         72.77             1.46x
+Tree hard           39.35         52.27             0.75x
+
+=== COMPILED: tree-hard vs LSTM ===
+  LSTM compiled:      59.11 us
+  Tree hard compiled: 52.27 us  (1.13x vs LSTM)
+  theoretical speedup from FLOPs: 3.91x
