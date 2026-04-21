@@ -29,6 +29,10 @@ Commits tagged with exp number.
 | 14 | ForgetGatedTreeCell (LSTM-style per-dim gate on tree proposal) | **WIN**: tree+forget beats LSTM at every seq_len; gap grows with context |
 | 15 | Routing entropy annealing (sub-agent) | annealing worked mechanically (\|logit\| 2.2→3.3) but hard inference still ~random (gap 2.1-2.4 BPC); speedup still negative |
 | 16 | Clean FLOP count + minimal batch=1 slicing bench | **Tree hard is 3.9x cheaper than LSTM in FLOPs**; PyTorch wall-clock ties LSTM (framework overhead eats ~3x); tree-hard vs tree-soft 2.45x wall-clock speedup |
+| 17 | torch.compile on tree-hard | Does NOT help: data-dependent control flow (`logit.item() > 0`) breaks the graph; tree-hard compiled 0.75x (slower than eager). Tree-soft got 1.46x from compile |
+| 18 | numpy port (no PyTorch overhead) | **WIN**: tree-hard 6.78us vs LSTM 28us = **4.16x faster**; tree-hard vs tree-soft 5.95x. Empirical proof the algorithmic speedup is real |
+| 19 | Scale state_dim 128→2048 | **Crossover revealed**: torch speedup goes 0.88x → 3.32x → 3.55x → 3.92x. At state=2048 stock PyTorch matches theoretical FLOP ratio exactly |
+| 20 | Gumbel-sigmoid + tau annealing | PENDING - running |
 
 ## Best-so-far configuration
 
@@ -48,16 +52,15 @@ Commits tagged with exp number.
 | Tree converges faster than LSTM | ✅ peaks at epoch 5 vs 10-20 (exp6/7) |
 | Weight sharing reduces overfit | ✅ 10x less overfit (exp10/14) |
 | Tree wins at long context | ✅ with forget gate; gap grows (exp14) |
-| Train soft, infer sparse works | ❌ ❌ rejected twice (exp13, exp15) |
-| Algorithmic speedup exists | ✅ 3.9x fewer FLOPs (exp16) |
-| Speedup realizable in PyTorch | ⚠️ ~parity with LSTM at small scales |
+| Train soft, infer sparse works | ❌ ❌ rejected twice (exp13, exp15) - need Gumbel (exp20 in flight) |
+| Algorithmic speedup exists | ✅ 3.9x fewer FLOPs (exp16), **4.16x numpy wall-clock (exp18)** |
+| Speedup realizable in PyTorch | ✅ **at state_dim >= 1024 hits 3.55-3.92x** (exp19) |
 
 ## Open questions / planned experiments
 
-- **exp17**: does `torch.compile` recover the FLOP gap at batch=1?
-- **exp18**: does a pure numpy port show the speedup without PyTorch overhead?
-- **exp19**: at larger state_dim (512/1024/2048) does matmul dominate overhead enough to show the FLOP speedup?
-- **exp20**: Gumbel-softmax routing with temperature annealing — does it make hard inference viable without catastrophic accuracy loss?
+- **exp20**: Gumbel-softmax routing with temperature annealing — does it make hard inference viable without catastrophic accuracy loss? (IN FLIGHT)
+- **future**: train shared+forget at state=1024 (seq 128) - does the quality advantage survive at scale where speedup also kicks in?
+- **future**: compile the numpy hard-tree into a C extension / Rust / triton kernel to lock in 4x speedup for standard LLM deploy
 
 ## Key files
 
