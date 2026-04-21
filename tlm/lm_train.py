@@ -100,15 +100,21 @@ def run_lm(cfg: LMConfig, model_ctor=TreeLM, data_fn=None):
             print(f"epoch {epoch:3d} | train BPC {train_bpc:.3f} acc {total_acc/n_batches:.3f} "
                   f"| val BPC {val_bpc:.3f} acc {val_acc:.3f} | {time.time()-t0:.0f}s")
 
-    # generation samples
+    # generation samples - skip gracefully if vocab doesn't have ROMEO: chars
     model.eval()
-    seed_text = "ROMEO:\n"
-    seed_ids = torch.tensor([[stoi[c] for c in seed_text]], dtype=torch.long)
-    gen_ids = model.generate(seed_ids, n_new_tokens=200, temperature=0.8)
-    gen_text = "".join(itos[int(t)] for t in gen_ids[0])
-    print("\n--- generated continuation (200 chars from seed) ---")
-    print(gen_text)
-    print("--- end ---")
+    try:
+        seed_text = "ROMEO:\n"
+        seed_ids = torch.tensor([[stoi[c] for c in seed_text]], dtype=torch.long)
+        gen_ids = model.generate(seed_ids, n_new_tokens=200, temperature=0.8)
+        if isinstance(next(iter(itos.values())), str):
+            gen_text = "".join(itos[int(t)] for t in gen_ids[0])
+        else:
+            gen_text = bytes([itos[int(t)] for t in gen_ids[0]]).decode("utf-8", errors="replace")
+        print("\n--- generated continuation (200 tokens from seed) ---")
+        print(gen_text)
+        print("--- end ---")
+    except (KeyError, AttributeError) as e:
+        print(f"\n(skipping generation: {e})")
 
     return {
         "name": cfg.name, "n_params": n_params,

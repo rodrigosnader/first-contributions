@@ -23,11 +23,20 @@ def make_cfg(name):
                     epochs=20, lr=3e-3, grad_clip=5.0, log_every=5, name=name)
 
 
-variants = [
+import os
+# allow running a subset via env var (e.g. EXP23_ONLY=lstm,transformer)
+only = os.environ.get("EXP23_ONLY", "").lower()
+all_variants = [
     ("TreeLMv2SharedForget", TreeLMv2SharedForget),
     ("LSTMLMv2",             LSTMLMv2),
     ("TransformerLM",        TransformerLM),
 ]
+if only:
+    keep = [v for v in only.split(",") if v]
+    variants = [(n, c) for n, c in all_variants
+                if any(k in n.lower() for k in keep)]
+else:
+    variants = all_variants
 
 results = []
 for label, ctor in variants:

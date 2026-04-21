@@ -1,0 +1,22 @@
+
+=== TreeLMv2SharedForget on WikiText-2 ===
+=== TreeLMv2SharedForget ===
+model: TreeLMv2SharedForget, params: 1,006,028
+vocab=178, seq_len=128, state=256
+random baseline BPC: 7.476
+epoch   1 | train BPC 3.273 acc 0.377 | val BPC 2.453 acc 0.509 | 171s
+epoch   5 | train BPC 1.971 acc 0.596 | val BPC 1.956 acc 0.605 | 846s
+epoch  10 | train BPC 1.743 acc 0.636 | val BPC 1.926 acc 0.613 | 1696s
+epoch  15 | train BPC 1.603 acc 0.660 | val BPC 1.966 acc 0.612 | 2546s
+epoch  20 | train BPC 1.498 acc 0.680 | val BPC 2.028 acc 0.610 | 3367s
+Traceback (most recent call last):
+  File "/home/user/first-contributions/tlm/experiments/exp23_wikitext.py", line 35, in <module>
+    r = run_lm(make_cfg(label), model_ctor=ctor, data_fn=make_wikitext_splits)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/first-contributions/tlm/lm_train.py", line 106, in run_lm
+    seed_ids = torch.tensor([[stoi[c] for c in seed_text]], dtype=torch.long)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/first-contributions/tlm/lm_train.py", line 106, in <listcomp>
+    seed_ids = torch.tensor([[stoi[c] for c in seed_text]], dtype=torch.long)
+                              ~~~~^^^
+KeyError: 'R'
