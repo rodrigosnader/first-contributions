@@ -154,14 +154,18 @@ def train_regularized(cfg: LMConfig, model_ctor, label_smoothing=0.1, dropout=0.
 
 
 if __name__ == "__main__":
-    cfg = LMConfig(seq_len=128, n_train=4000, n_val=500, batch_size=32,
-                   epochs=25, lr=3e-3, grad_clip=1.0, log_every=5,
-                   name="transformer_reg")
-    r = train_regularized(cfg, TransformerLMReg, label_smoothing=0.1, dropout=0.1)
+    from wikitext_data import make_wikitext_splits
+
+    # Run on WikiText-2 to match exp23 for direct comparison
+    cfg = LMConfig(seq_len=128, n_train=6000, n_val=800, batch_size=32,
+                   epochs=20, lr=3e-3, grad_clip=1.0, log_every=5,
+                   name="transformer_reg_wikitext")
+    r = train_regularized(cfg, TransformerLMReg, label_smoothing=0.1, dropout=0.1,
+                          data_fn=make_wikitext_splits)
     print(f"\n=== SUMMARY ===")
-    print(f"{r['name']:<25} params={r['n_params']:,}  "
+    print(f"{r['name']:<30} params={r['n_params']:,}  "
           f"best_vbpc={r['best_val_bpc']:.3f}  best_val_acc={r['best_val_acc']:.3f}  "
           f"time={r['time_s']:.0f}s")
-    print(f"\n--- compare to exp22 vanilla transformer: vbpc=2.583 acc=0.483 ---")
-    print(f"--- compare to exp21 LSTM ~700k:            vbpc=2.383 acc=0.522 ---")
-    print(f"--- compare to exp21 TLM ~700k:             vbpc=2.426 acc=0.513 ---")
+    print(f"\n--- compare to exp23 vanilla transformer: vbpc=2.027 acc=0.593 ---")
+    print(f"--- compare to exp23 LSTMLMv2:              vbpc=1.901 acc=0.619 ---")
+    print(f"--- compare to exp23 TreeLMv2SharedForget:  vbpc=1.926 acc=0.613 ---")
