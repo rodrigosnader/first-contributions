@@ -1,0 +1,22 @@
+=== Transformer baseline matched-params ===
+=== transformer_matched ===
+model: TransformerLM, params: 694,849
+vocab=65, seq_len=128, state=256
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.686 acc 0.269 | val BPC 3.442 acc 0.301 | 11s
+epoch   5 | train BPC 2.349 acc 0.505 | val BPC 2.623 acc 0.459 | 43s
+epoch  10 | train BPC 1.977 acc 0.572 | val BPC 2.583 acc 0.483 | 82s
+epoch  15 | train BPC 1.759 acc 0.615 | val BPC 2.687 acc 0.478 | 120s
+epoch  20 | train BPC 1.576 acc 0.651 | val BPC 2.861 acc 0.474 | 161s
+epoch  25 | train BPC 1.413 acc 0.686 | val BPC 3.106 acc 0.461 | 207s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+And fake thus with me, if your love, if eyes,
+I can your perity of your life diviliing peace
+In for your more face my froridy ps fiselen------------
+Gomelarined winine! homivit, omole! thoo mal!
+tlak!
+--- end ---
+
+transformer_matched            params=694,849  best_vbpc=2.583  best_val_acc=0.483  time=208s
