@@ -33,6 +33,8 @@ Commits tagged with exp number.
 | 18 | numpy port (no PyTorch overhead) | **WIN**: tree-hard 6.78us vs LSTM 28us = **4.16x faster**; tree-hard vs tree-soft 5.95x. Empirical proof the algorithmic speedup is real |
 | 19 | Scale state_dim 128→2048 | **Crossover revealed**: torch speedup goes 0.88x → 3.32x → 3.55x → 3.92x. At state=2048 stock PyTorch matches theoretical FLOP ratio exactly |
 | 20 | Gumbel-sigmoid + tau annealing | **3x improvement**: routing confidence 0.998, soft BPC preserved (2.66), hard BPC 3.61 (vs 5.41 exp13). Acc drop -11pp (vs -27pp). Gap +0.945 BPC still remains but 3x smaller |
+| 21 | Scaled TLM (state=256) vs LSTM matched 700k params, seq=128 | LSTM wins: 2.383 vs tree 2.426 (delta +0.043). Reverses exp14 — tree advantage was small-state+long-seq specific |
+| 22 | Transformer (~695k) same regime | **Transformer LOSES to both**: vbpc 2.583 (LSTM 2.383, tree 2.426). But 14x faster to train (attention parallelizes). Vanilla transformer, no tuning - regime is small-data/small-params where RNN inductive bias helps |
 
 ## Best-so-far configuration
 
