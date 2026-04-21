@@ -41,12 +41,14 @@ def shifted_loss(logits: torch.Tensor, tokens: torch.Tensor, loss_fn) -> tuple[t
     return loss, acc
 
 
-def run_lm(cfg: LMConfig, model_ctor=TreeLM):
+def run_lm(cfg: LMConfig, model_ctor=TreeLM, data_fn=None):
+    """data_fn(n_train, n_val, seq_len) -> (train_data, val_data, stoi, itos).
+    If None, defaults to make_shakespeare_splits."""
     torch.manual_seed(cfg.seed)
 
-    train_data, val_data, stoi, itos = make_shakespeare_splits(
-        cfg.n_train, cfg.n_val, cfg.seq_len
-    )
+    if data_fn is None:
+        data_fn = make_shakespeare_splits
+    train_data, val_data, stoi, itos = data_fn(cfg.n_train, cfg.n_val, cfg.seq_len)
     vocab_size = len(stoi)
 
     import inspect
