@@ -1,0 +1,12 @@
+Per-step wall-clock, batch=1, single thread:
+op               torch us   numpy us   numpy speedup
+LSTM                38.33      28.20           1.36x
+Tree soft          104.62      40.33           2.59x
+Tree hard           39.92       6.78           5.89x
+
+=== numpy head-to-head ===
+  LSTM numpy:      28.20 us
+  Tree soft numpy: 40.33 us  (0.70x vs LSTM)
+  Tree hard numpy:  6.78 us  (4.16x vs LSTM)
+  tree hard vs tree soft: 5.95x (theoretical: 7.87x)
+  tree hard vs LSTM:      4.16x (theoretical: 3.91x)
