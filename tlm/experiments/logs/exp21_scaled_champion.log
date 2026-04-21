@@ -1,0 +1,53 @@
+=== TLM champion scaled (TreeLMv2SharedForget) ===
+=== tree_shared_forget_256 ===
+model: TreeLMv2SharedForget, params: 712,228
+vocab=65, seq_len=128, state=256
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.509 acc 0.324 | val BPC 2.845 acc 0.418 | 107s
+epoch   5 | train BPC 1.961 acc 0.578 | val BPC 2.426 acc 0.507 | 503s
+epoch  10 | train BPC 1.661 acc 0.634 | val BPC 2.524 acc 0.513 | 995s
+epoch  15 | train BPC 1.456 acc 0.678 | val BPC 2.689 acc 0.504 | 1514s
+epoch  20 | train BPC 1.292 acc 0.713 | val BPC 2.893 acc 0.495 | 2042s
+epoch  25 | train BPC 1.160 acc 0.741 | val BPC 3.117 acc 0.489 | 2545s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+MARCIUS:
+Sir, sirrawing--
+Harp with holy beso you this.
+
+HENRY BOLINGBROKE:
+Prey hath blood, to think thy blood
+When she shall rise us our lights in varlet, chair,
+The strange of coronation.
+If you wi
+--- end ---
+
+=== LSTM matched-param ===
+=== lstm_v2_256 ===
+model: LSTMLMv2, params: 686,305
+vocab=65, seq_len=128, state=256
+random baseline BPC: 6.022
+epoch   1 | train BPC 3.200 acc 0.368 | val BPC 2.751 acc 0.433 | 121s
+epoch   5 | train BPC 1.945 acc 0.581 | val BPC 2.383 acc 0.522 | 608s
+epoch  10 | train BPC 1.650 acc 0.636 | val BPC 2.541 acc 0.516 | 1210s
+epoch  15 | train BPC 1.413 acc 0.685 | val BPC 2.812 acc 0.505 | 1814s
+epoch  20 | train BPC 1.220 acc 0.727 | val BPC 3.198 acc 0.494 | 2422s
+epoch  25 | train BPC 1.077 acc 0.758 | val BPC 3.563 acc 0.483 | 3038s
+
+--- generated continuation (200 chars from seed) ---
+ROMEO:
+HERMIONE:
+Not to be said, I speak to desire
+secret how to her aad, and my divine soul thou hast?
+Go of my subjects with dry:
+Thou dost fored moulding in their suges,
+And, after she hasty tokens to sla
+--- end ---
+
+=== SUMMARY ===
+model                              params   best_vbpc    val_acc     time
+tree_shared_forget_256            712,228       2.426      0.513    2546s
+lstm_v2_256                       686,305       2.383      0.522    3039s
+
+delta tree-lstm: +0.043 BPC
