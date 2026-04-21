@@ -1,0 +1,14 @@
+=== transformer_reg_wikitext ===
+params: 723,890  dropout=0.1  label_smoothing=0.1
+epoch   1  lr 0.0015  train_bpc 5.063  val_bpc 4.186  val_acc 0.326  49s
+epoch   5  lr 0.0028  train_bpc 3.553  val_bpc 3.300  val_acc 0.516  230s
+epoch  10  lr 0.0018  train_bpc 3.266  val_bpc 3.058  val_acc 0.571  459s
+epoch  15  lr 0.0005  train_bpc 3.146  val_bpc 2.979  val_acc 0.592  689s
+epoch  20  lr 0.0000  train_bpc 3.105  val_bpc 2.963  val_acc 0.597  919s
+
+=== SUMMARY ===
+transformer_reg_wikitext       params=723,890  best_vbpc=2.963  best_val_acc=0.597  time=919s
+
+--- compare to exp23 vanilla transformer: vbpc=2.027 acc=0.593 ---
+--- compare to exp23 LSTMLMv2:              vbpc=1.901 acc=0.619 ---
+--- compare to exp23 TreeLMv2SharedForget:  vbpc=1.926 acc=0.613 ---
