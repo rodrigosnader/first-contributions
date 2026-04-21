@@ -1,0 +1,6 @@
+ state  nruns  lstm_np  hard_np  np_spd   lstm_t   hard_t  torch_spd  FLOP_ratio
+                    us       us               us       us              LSTM/hard
+   128    200    27.88     6.69   4.17x    37.56    42.58      0.88x       3.91x
+   512    200    60.10    26.89   2.23x   203.76    61.35      3.32x       3.98x
+  1024    200    99.10    16.81   5.89x   785.53   221.05      3.55x       3.99x
+  2048    200   361.70    48.60   7.44x  2681.97   683.80      3.92x       3.99x
