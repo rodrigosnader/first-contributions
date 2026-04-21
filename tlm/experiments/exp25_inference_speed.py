@@ -62,15 +62,21 @@ def time_tree_generation(model, prompt, n_new_tokens):
 
 
 def time_transformer_generation(model, prompt, n_new_tokens):
-    """Uses the model's existing generate; re-encodes prompt each step.
-    NOTE: exp22 TransformerLM.generate re-runs the full forward over the
-    context at every step (no KV cache) - matches what most simple
-    PyTorch LM generation does. A true KV-cache version would be faster.
-    We benchmark the 'no KV cache' path to stay consistent with exp22."""
+    """Slow path: re-encodes full context each step (no KV cache)."""
     model.eval()
     with torch.no_grad():
         t0 = time.perf_counter()
         out = model.generate(prompt, n_new_tokens, temperature=1.0)
+        dt = time.perf_counter() - t0
+    return dt
+
+
+def time_transformer_kv_generation(model, prompt, n_new_tokens):
+    """KV-cache path: prompt prefilled once, 1-token forward per step."""
+    model.eval()
+    with torch.no_grad():
+        t0 = time.perf_counter()
+        out = model.generate_kv(prompt, n_new_tokens, temperature=1.0)
         dt = time.perf_counter() - t0
     return dt
 
@@ -87,8 +93,8 @@ def main():
     ]
     gen_lens = [64, 256, 1024]
 
-    print(f"{'config':<8} {'gen':>5} {'tree_hard_s':>12} {'txf_s':>10} "
-          f"{'tree_tok/s':>11} {'txf_tok/s':>10} {'ratio':>8}")
+    print(f"{'config':<8} {'gen':>5} {'tree_s':>9} {'txf_kv_s':>9} "
+          f"{'tree_tok/s':>11} {'txf_kv_tok/s':>13} {'ratio':>8}")
     for cfg_name, cfg in configs:
         state = cfg["state_dim"]; dmodel = cfg["d_model"]
         tree = TreeLMv2SharedForget(VOCAB, embed_dim=32, state_dim=state,
@@ -102,11 +108,11 @@ def main():
 
         for n in gen_lens:
             t_tree = bench(lambda: time_tree_generation(tree, prompt, n))
-            t_txf = bench(lambda: time_transformer_generation(txf, prompt, n))
+            t_kv = bench(lambda: time_transformer_kv_generation(txf, prompt, n))
             tree_rate = n / t_tree
-            txf_rate = n / t_txf
-            print(f"{cfg_name:<8} {n:>5} {t_tree:>12.3f} {t_txf:>10.3f} "
-                  f"{tree_rate:>11.1f} {txf_rate:>10.1f} {tree_rate/txf_rate:>7.2f}x")
+            kv_rate = n / t_kv
+            print(f"{cfg_name:<8} {n:>5} {t_tree:>9.3f} {t_kv:>9.3f} "
+                  f"{tree_rate:>11.1f} {kv_rate:>13.1f} {tree_rate/kv_rate:>7.2f}x")
 
         print(f"          tree params: {tree_params:,}  txf params: {txf_params:,}\n")
 

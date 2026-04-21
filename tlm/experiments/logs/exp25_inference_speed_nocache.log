@@ -1,0 +1,16 @@
+config     gen  tree_hard_s      txf_s  tree_tok/s  txf_tok/s    ratio
+small       64        0.062      0.164      1028.4      391.2    2.63x
+small      256        0.245      1.359      1045.7      188.3    5.55x
+small     1024        0.974     33.965      1051.5       30.1   34.88x
+          tree params: 594,364  txf params: 989,696
+
+medium      64        0.075      0.201       858.7      318.1    2.70x
+medium     256        0.261      1.849       979.7      138.5    7.07x
+medium    1024        1.117     68.030       917.0       15.1   60.92x
+          tree params: 1,208,828  txf params: 1,975,936
+
+large       64        0.095      0.257       672.0      249.4    2.69x
+large      256        0.353      2.805       725.0       91.3    7.94x
+large     1024        1.357     86.538       754.8       11.8   63.78x
+          tree params: 2,978,428  txf params: 3,289,856
+

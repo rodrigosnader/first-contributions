@@ -27,20 +27,26 @@ class CausalSelfAttention(nn.Module):
         self.qkv = nn.Linear(d_model, 3 * d_model)
         self.proj = nn.Linear(d_model, d_model)
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+    def forward(self, x: torch.Tensor, kv_cache=None) -> torch.Tensor:
         B, T, D = x.shape
         qkv = self.qkv(x).reshape(B, T, 3, self.n_heads, self.d_head)
         q, k, v = qkv.unbind(dim=2)
         q = q.transpose(1, 2)  # (B, H, T, Dh)
         k = k.transpose(1, 2)
         v = v.transpose(1, 2)
+        if kv_cache is not None:
+            past_k, past_v = kv_cache
+            k = torch.cat([past_k, k], dim=2)
+            v = torch.cat([past_v, v], dim=2)
         att = (q @ k.transpose(-2, -1)) / math.sqrt(self.d_head)
-        mask = torch.triu(torch.ones(T, T, device=x.device, dtype=torch.bool), diagonal=1)
-        att = att.masked_fill(mask, float("-inf"))
+        T_q = q.shape[2]; T_k = k.shape[2]
+        # causal mask: each q at pos (T_k - T_q + i) can only attend to k positions <= (T_k - T_q + i)
+        mask = torch.ones(T_q, T_k, device=x.device, dtype=torch.bool).tril(diagonal=T_k - T_q)
+        att = att.masked_fill(~mask, float("-inf"))
         att = torch.softmax(att, dim=-1)
-        out = att @ v  # (B, H, T, Dh)
+        out = att @ v
         out = out.transpose(1, 2).reshape(B, T, D)
-        return self.proj(out)
+        return self.proj(out), (k, v)
 
 
 class TransformerBlock(nn.Module):
@@ -55,10 +61,11 @@ class TransformerBlock(nn.Module):
             nn.Linear(d_model * ff_mult, d_model),
         )
 
-    def forward(self, x):
-        x = x + self.attn(self.norm1(x))
+    def forward(self, x, kv_cache=None):
+        a, new_kv = self.attn(self.norm1(x), kv_cache=kv_cache)
+        x = x + a
         x = x + self.ff(self.norm2(x))
-        return x
+        return x, new_kv
 
 
 class TransformerLM(nn.Module):
@@ -79,25 +86,52 @@ class TransformerLM(nn.Module):
         self.head = nn.Linear(d_model, vocab_size)
         self.max_len = max_len
 
-    def forward(self, tokens):
+    def forward(self, tokens, kv_caches=None, pos_offset=0):
         B, T = tokens.shape
-        pos = torch.arange(T, device=tokens.device).unsqueeze(0).expand(B, T)
+        pos = torch.arange(pos_offset, pos_offset + T, device=tokens.device).unsqueeze(0).expand(B, T)
         x = self.tok_embed(tokens) + self.pos_embed(pos)
-        for block in self.blocks:
-            x = block(x)
+        new_caches = []
+        for i, block in enumerate(self.blocks):
+            cache_i = None if kv_caches is None else kv_caches[i]
+            x, new_kv = block(x, kv_cache=cache_i)
+            new_caches.append(new_kv)
         x = self.norm(x)
-        return self.head(x)
+        return self.head(x), new_caches
 
     @torch.no_grad()
     def generate(self, prompt, n_new_tokens, temperature=1.0):
+        """Slow path: re-runs full context every step (no KV cache)."""
         self.eval()
         out = prompt.clone()
         for _ in range(n_new_tokens):
             ctx = out[:, -self.max_len:]
-            logits = self(ctx)[:, -1, :] / temperature
+            logits, _ = self(ctx)
+            logits = logits[:, -1, :] / temperature
             probs = torch.softmax(logits, dim=-1)
             nxt = torch.multinomial(probs, 1)
             out = torch.cat([out, nxt], dim=1)
+        return out
+
+    @torch.no_grad()
+    def generate_kv(self, prompt, n_new_tokens, temperature=1.0):
+        """KV-cache path: prompt prefilled once, then 1-token forward per step."""
+        self.eval()
+        out = prompt.clone()
+        logits, caches = self(prompt)
+        pos = prompt.shape[1]
+        last = logits[:, -1, :]
+        for _ in range(n_new_tokens):
+            probs = torch.softmax(last / temperature, dim=-1)
+            nxt = torch.multinomial(probs, 1)
+            out = torch.cat([out, nxt], dim=1)
+            if pos >= self.max_len:
+                # context wraps: naive strategy = stop growing KV cache at max_len
+                # (truncate older tokens). Keeps benchmark bounded.
+                caches = [(k[:, :, -self.max_len+1:, :], v[:, :, -self.max_len+1:, :])
+                          for (k, v) in caches]
+            logits, caches = self(nxt, kv_caches=caches, pos_offset=min(pos, self.max_len - 1))
+            pos += 1
+            last = logits[:, -1, :]
         return out
 
 
