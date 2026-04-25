@@ -1,0 +1,32 @@
+loading movie_reviews...
+loaded 2000 reviews
+train: 1600  val: 400
+
+=== untrained embeddings (random) ===
+  tree   (untrained, params=130,670): probe train=0.609 val=0.512
+  lstm   (untrained, params=91,136): probe train=0.603 val=0.535
+  bag    (untrained, params=32,768): probe train=0.579 val=0.548
+
+=== autoencoder-pretrained encoders ===
+  pretraining tree autoencoder...
+    ae epoch  1  loss 3.117  acc 0.187
+    ae epoch  3  loss 2.999  acc 0.190
+    ae epoch  6  loss 2.997  acc 0.191
+    ae epoch  9  loss 2.990  acc 0.191
+  tree   (AE-pretrained): probe train=0.620 val=0.540
+  pretraining lstm autoencoder...
+    ae epoch  1  loss 3.137  acc 0.186
+    ae epoch  3  loss 2.999  acc 0.190
+    ae epoch  6  loss 2.997  acc 0.191
+    ae epoch  9  loss 2.996  acc 0.191
+  lstm   (AE-pretrained): probe train=0.533 val=0.522
+
+=== SUMMARY (NLTK movie_reviews sentiment, MAX_LEN=256, state=128) ===
+embedding              params  probe_train   probe_val
+tree_untrained        130,670        0.609       0.512
+lstm_untrained         91,136        0.603       0.535
+bag_untrained          32,768        0.579       0.548
+tree_ae               130,670        0.620       0.540
+lstm_ae                91,136        0.533       0.522
+
+--- baseline: random class is 0.5 (binary balanced) ---
