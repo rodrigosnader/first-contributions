@@ -1,0 +1,32 @@
+=== training TLMs (curriculum) ===
+  TLM curriculum state=128 ...
+    soft: BPC 2.859 acc 0.455  |  hard: BPC 3.809 acc 0.347  (449s)
+    soft rate 656 tok/s  |  hard rate 652 tok/s
+  TLM curriculum state=256 ...
+    soft: BPC 3.259 acc 0.436  |  hard: BPC 4.031 acc 0.353  (637s)
+    soft rate 605 tok/s  |  hard rate 590 tok/s
+
+=== training LSTMs ===
+  LSTM state=128 ...
+    BPC 2.719  acc 0.488  rate 1642 tok/s  (231s)
+  LSTM state=192 ...
+    BPC 3.033  acc 0.476  rate 1415 tok/s  (298s)
+  LSTM state=256 ...
+    BPC 3.538  acc 0.459  rate 1364 tok/s  (373s)
+  LSTM state=384 ...
+    BPC 4.715  acc 0.453  rate 1124 tok/s  (580s)
+
+=== PARETO TABLE (sorted by tok/s descending) ===
+model              params   val_bpc   val_acc    tok/s
+lstm128           275,169     2.719     0.488   1642.1
+lstm192           456,161     3.033     0.476   1415.2
+lstm256           686,305     3.538     0.459   1363.6
+lstm384         1,294,049     4.715     0.453   1123.5
+tlm128_soft       293,348     2.859     0.455    655.6
+tlm128_hard       293,348     3.809     0.347    652.0
+tlm256_soft       712,228     3.259     0.436    605.4
+tlm256_hard       712,228     4.031     0.353    589.9
+
+=== PARETO FRONTIER (sorted by tok/s, best bpc per row keeps the model alive) ===
+model              params   val_bpc    tok/s
+lstm128           275,169     2.719   1642.1
