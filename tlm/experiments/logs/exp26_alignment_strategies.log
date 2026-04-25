@@ -1,0 +1,43 @@
+
+=== strategy: baseline ===
+  epoch  5  mode=soft  tau=1.00  train_bpc 2.363  acc 0.505
+  epoch 10  mode=soft  tau=1.00  train_bpc 2.033  acc 0.564
+  epoch 15  mode=soft  tau=1.00  train_bpc 1.850  acc 0.597
+  epoch 20  mode=soft  tau=1.00  train_bpc 1.715  acc 0.622
+  -> soft BPC 2.836 acc 0.471  |  hard BPC 5.061 acc 0.236  |  gap BPC +2.225 acc +0.235
+
+=== strategy: gumbel ===
+  epoch  5  mode=gumbel  tau=0.76  train_bpc 2.450  acc 0.489
+  epoch 10  mode=gumbel  tau=0.39  train_bpc 2.118  acc 0.546
+  epoch 15  mode=gumbel  tau=0.20  train_bpc 1.951  acc 0.577
+  epoch 20  mode=gumbel  tau=0.10  train_bpc 1.863  acc 0.591
+  -> soft BPC 2.745 acc 0.476  |  hard BPC 3.738 acc 0.347  |  gap BPC +0.993 acc +0.129
+
+=== strategy: ste ===
+  epoch  5  mode=ste  tau=1.00  train_bpc 2.380  acc 0.502
+  epoch 10  mode=ste  tau=1.00  train_bpc 2.082  acc 0.554
+  epoch 15  mode=ste  tau=1.00  train_bpc 1.935  acc 0.580
+  epoch 20  mode=ste  tau=1.00  train_bpc 1.825  acc 0.600
+  -> soft BPC 2.867 acc 0.465  |  hard BPC 3.763 acc 0.350  |  gap BPC +0.895 acc +0.115
+
+=== strategy: full_hard ===
+  epoch  5  mode=full_hard  tau=1.00  train_bpc 2.380  acc 0.502
+  epoch 10  mode=full_hard  tau=1.00  train_bpc 2.082  acc 0.554
+  epoch 15  mode=full_hard  tau=1.00  train_bpc 1.935  acc 0.580
+  epoch 20  mode=full_hard  tau=1.00  train_bpc 1.825  acc 0.600
+  -> soft BPC 2.867 acc 0.465  |  hard BPC 3.763 acc 0.350  |  gap BPC +0.895 acc +0.115
+
+=== strategy: curriculum ===
+  epoch  5  mode=soft  tau=1.00  train_bpc 2.363  acc 0.505
+  epoch 10  mode=soft  tau=1.00  train_bpc 2.033  acc 0.564
+  epoch 15  mode=ste  tau=1.00  train_bpc 2.047  acc 0.560
+  epoch 20  mode=ste  tau=1.00  train_bpc 1.923  acc 0.580
+  -> soft BPC 2.857 acc 0.454  |  hard BPC 3.628 acc 0.359  |  gap BPC +0.771 acc +0.095
+
+=== SUMMARY ===
+strategy      soft_bpc  soft_acc  hard_bpc  hard_acc   gap_acc  time_s
+baseline         2.836     0.471     5.061     0.236    +0.235    403s
+gumbel           2.745     0.476     3.738     0.347    +0.129    443s
+ste              2.867     0.465     3.763     0.350    +0.115    425s
+full_hard        2.867     0.465     3.763     0.350    +0.115    413s
+curriculum       2.857     0.454     3.628     0.359    +0.095    410s
