@@ -1,0 +1,38 @@
+
+=== Phase 1: train MLP-RNN baseline (single-leaf cell) ===
+MLPRNN-LM params: 233,757
+  [mlprnn] ep   1  train_bpc 4.123  val_bpc 3.307  val_acc 0.348  (18s)
+  [mlprnn] ep   5  train_bpc 2.436  val_bpc 2.677  val_acc 0.455  (83s)
+  [mlprnn] ep  10  train_bpc 2.135  val_bpc 2.613  val_acc 0.475  (164s)
+  [mlprnn] ep  15  train_bpc 1.989  val_bpc 2.662  val_acc 0.476  (244s)
+  [mlprnn] ep  20  train_bpc 1.881  val_bpc 2.751  val_acc 0.472  (323s)
+
+=== Phase 2: warm-start TLM from MLP-RNN, verify init parity ===
+warmed TLM params: 293,348
+warm-start init val_bpc=2.751 (seed final 2.613) -- diff +0.137
+
+=== Phase 3: fine-tune the warm-started TLM ===
+  [warm] ep   1  train_bpc 1.776  val_bpc 2.738  val_acc 0.479  (20s)
+  [warm] ep   5  train_bpc 1.691  val_bpc 2.847  val_acc 0.475  (100s)
+  [warm] ep  10  train_bpc 1.634  val_bpc 2.956  val_acc 0.465  (201s)
+  [warm] ep  15  train_bpc 1.572  val_bpc 3.054  val_acc 0.462  (302s)
+
+=== Phase 4: from-scratch TLM control ===
+scratch TLM params: 293,348
+  [scratch] ep   1  train_bpc 4.116  val_bpc 3.291  val_acc 0.347  (20s)
+  [scratch] ep   5  train_bpc 2.363  val_bpc 2.644  val_acc 0.467  (102s)
+  [scratch] ep  10  train_bpc 2.033  val_bpc 2.621  val_acc 0.483  (205s)
+  [scratch] ep  15  train_bpc 1.850  val_bpc 2.679  val_acc 0.482  (306s)
+  [scratch] ep  20  train_bpc 1.715  val_bpc 2.836  val_acc 0.471  (406s)
+
+=== SUMMARY ===
+model                            params   val_bpc   val_acc
+MLPRNN baseline (seed)          233,757     2.613     0.476
+warm-started TLM at init        293,348     2.751     0.472
+warm-started TLM fine-tuned     293,348     2.738     0.479
+from-scratch TLM control        293,348     2.621     0.483
+
+=== INTERPRETATION ===
+  H1 (warm init = seed):   diff +0.137  (FAILED)
+  H2 (warm-tuned > seed):  delta +0.124  (NO tree fails to improve)
+  warm-tuned vs from-scratch tree:  delta +0.116  (scratch wins)
