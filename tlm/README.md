@@ -95,6 +95,26 @@ confidence reached 0.998 — essentially discrete. Usable but not perfect.
   faster than transformer with KV cache at matched size**, advantage grows
   with generation length
 
+### Phase 8: Hardening the story (exp26-29)
+- **exp26**: five train-vs-inference alignment strategies. **Curriculum
+  (soft warmup -> STE) wins**: hard-inference accuracy gap shrinks to
+  -9.5pp (from -23.5pp baseline, -12.9pp Gumbel). The PRD's "train soft,
+  infer hard" thesis is now workable, with a measurable quality tax.
+- **exp27**: TLM autoencoder as a sentence-embedding model on movie
+  reviews. **Negative**: bag-of-bytes (32k params) beats all encoders.
+  Reconstruction advantage from exp5b does not transfer to downstream
+  classification.
+- **exp28**: speed-vs-quality Pareto. **LSTM-128 dominates everything**
+  in PyTorch full-LM benchmark. The 4-trees-per-step structure of the
+  full TLM model multiplies Python overhead and erases the cell-level
+  speedup. The "fast in PyTorch" claim only survives at state_dim >= 1024
+  or in fused/compiled implementations.
+- **exp29**: warm-start a tree from a trained MLP-RNN, verify init parity,
+  fine-tune. Init parity holds exactly (7e-6 diff). Fine-tune barely
+  moves (routing collapse). From-scratch tree matches MLPRNN best
+  (2.621 vs 2.613). **The tree's extra leaves do not buy quality** -
+  it ties a single-leaf dense baseline.
+
 ## What we validated vs the PRD
 
 | claim | status | evidence |
@@ -118,13 +138,30 @@ forget gate. At 700k-1M params on 10MB data:
 - Inference: 1.32-2.12x faster than transformer KV cache at batch=1 CPU
 - Train time: 15x slower than transformer (sequential recurrence)
 
-**The honest story**: TLM is a compact, recurrent, inference-fast LM with
-LSTM-style retention and MoE-style conditional compute. Not a universal winner,
-but clearly wins in the CPU-inference / small-model / moderate-data niche.
+**The honest story after 29 experiments**:
 
-**Unvalidated**: does the quality ranking flip at 100MB+ training data where
-transformer usually overtakes? Would require a bigger corpus; current hosts
-are restricted, user is placing a dataset locally to continue.
+Tree is **algorithmically equivalent** to a dense MLP-RNN/LSTM (exp29 init
+parity). Tree's "extra leaves" do not translate to better quality at the
+same parameter budget — best from-scratch tree ties single-leaf MLP-RNN.
+The "tree should be smarter than LSTM because it has if/else gates" intuition
+does NOT hold up empirically: routing has its own learning cost, and the
+sample-efficiency hit per leaf cancels the capacity gain.
+
+Tree's **inference speed advantage is real but architecture-fragile**:
+single-cell hard-tree is 3.9x cheaper than LSTM in FLOPs (exp16) and 4.16x
+in numpy wall-clock (exp18). In PyTorch full LM with 4 trees per step
+(exp28), Python overhead multiplies and LSTM-128 Pareto-dominates. The
+speedup is recoverable at state_dim >= 1024 (exp19) or in a compiled
+implementation, not in vanilla small-state PyTorch.
+
+The PRD's pitch reduces to: **a recurrent LM with forget-gate retention
+and MoE-style conditional cell compute, where the speedup needs scale or
+fusion to materialize, and the per-param quality is not differentiated
+from LSTM**.
+
+**Unvalidated**: 100MB+ training data scaling, fused/compiled forward,
+and distillation-with-progressive-hardening (Mixtral-style adjustable
+top-K threshold).
 
 ## Repo layout
 

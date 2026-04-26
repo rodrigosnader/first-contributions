@@ -38,6 +38,10 @@ Commits tagged with exp number.
 | 23 | WikiText-2 10MB, 3-way | LSTM 1.901 > Tree 1.926 > Transformer 2.027 > Reg-Transformer 1.994. More data shrinks transformer gap but doesn't flip ranking. Tree ~tied with LSTM (+0.025 BPC) |
 | 24/24b | Transformer with dropout+warmup+cosine (exp24b no-LS) | Regularized transformer: 1.994 BPC (vs vanilla 2.027). 0.03 BPC improvement, still loses to LSTM and Tree |
 | 25 | TLM hard vs Transformer-with-KV-cache inference speed | **Tree 1.32x-2.12x faster than transformer KV** at gen lengths 64-1024, small/medium/large configs. Tree rate constant, transformer decays with context. Even at matched-param large config tree wins AND is smaller |
+| 26 | Five train-vs-inference alignment strategies | **Curriculum (soft->STE) wins**: hard-inference acc gap drops to -9.5pp (vs Gumbel -12.9pp, baseline -23.5pp). STE alone matches full-hard. The "train soft, infer hard" thesis becomes workable, with a measurable but small quality tax |
+| 27 | TLM autoencoder as text embedding (sentiment) | **Negative**: bag-of-bytes (32k params) beats all encoders on movie_reviews sentiment. AE pretraining barely improves tree, hurts LSTM. Tree's reconstruction advantage from exp5b does NOT transfer to downstream classification |
+| 28 | Speed-vs-quality Pareto frontier | **LSTM-128 dominates ALL TLM variants in PyTorch full-LM**. Pareto frontier collapses to a single point. The 4-trees-per-step structure of TreeLMv2SharedForget multiplies Python overhead and erases the cell-level speedup measured in exp16/18/19 |
+| 29 | Warm-start tree from trained MLP-RNN | Init parity holds (max 7e-6 diff), but fine-tuning the warm-started tree barely moves (2.751 -> 2.738) due to routing collapse. From-scratch tree gets to 2.621, matching MLPRNN seed best (2.613). **Tree's "extra capacity" (8 leaves) does not buy quality over single-leaf MLPRNN**. Tree = MLPRNN per-param, period |
 
 ## Best-so-far configuration
 
@@ -57,16 +61,27 @@ Commits tagged with exp number.
 | Tree converges faster than LSTM | ✅ peaks at epoch 5 vs 10-20 (exp6/7) |
 | Weight sharing reduces overfit | ✅ 10x less overfit (exp10/14) |
 | Tree wins at long context | ✅ with forget gate; gap grows (exp14) |
-| Train soft, infer sparse works | ⚠️ Gumbel+annealing cuts gap 3x (exp20) - usable but not perfect |
+| Train soft, infer sparse works | ⚠️ Curriculum (exp26) cuts hard-acc gap to -9.5pp - workable with quality tax |
 | Algorithmic speedup exists | ✅ 3.9x fewer FLOPs (exp16), **4.16x numpy wall-clock (exp18)** |
-| Speedup realizable in PyTorch | ✅ **at state_dim >= 1024 hits 3.55-3.92x vs LSTM** (exp19), **1.32-2.12x vs Transformer KV** (exp25) |
-| Competitive quality vs Transformer at 10MB | ✅ Tree 1.926 vs Transformer 1.994 BPC (exp23-24b) |
+| Speedup realizable in PyTorch (cell only) | ✅ at state_dim >= 1024 hits 3.55-3.92x vs LSTM (exp19) |
+| Speedup realizable in full LM (4 trees per step) | ❌ exp28 shows LSTM-128 Pareto-dominates - Python overhead of 4 trees per step erases cell speedup |
+| Tree quality > LSTM quality at same params | ❌ exp29: warm-start parity holds, fine-tune barely moves; from-scratch tree ties MLPRNN. Extra leaves do not buy quality |
+| Competitive quality vs Transformer at 10MB | ✅ Tree 1.926 vs Transformer 1.994 BPC (exp23-24b) - in this small-data regime |
 
 ## Open questions / planned experiments
 
-- **exp20**: Gumbel-softmax routing with temperature annealing — does it make hard inference viable without catastrophic accuracy loss? (IN FLIGHT)
-- **future**: train shared+forget at state=1024 (seq 128) - does the quality advantage survive at scale where speedup also kicks in?
-- **future**: compile the numpy hard-tree into a C extension / Rust / triton kernel to lock in 4x speedup for standard LLM deploy
+- **future**: 100MB+ dataset (user is providing locally) - does the quality
+  vs transformer flip at real LLM scale?
+- **future**: distill a trained LSTM into a tree using KL targets +
+  routing-entropy penalty, then test progressive hard-thresholding at
+  inference for an adjustable speed/quality knob (Mixtral-style top-K
+  routing). Mathematical lossless conversion from dense W to sparse tree
+  is impossible (no input-dependent structure in trained dense weights),
+  so distillation-with-routing-shaping is the right framing.
+- **future**: fused/compiled tree forward (C++, Triton, torch.compile with
+  control-flow support) to recover the 4x cell speedup at full-LM scale.
+- **future**: scaling-law study - if tree's quality advantage grows with
+  scale, the project is sellable; if it shrinks/stays flat, niche stays small.
 
 ## Key files
 
