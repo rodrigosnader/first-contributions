@@ -1,0 +1,35 @@
+
+=== Dense Transformer ===
+params: 694,849
+  [dense] ep   1  train_bpc 3.683  val_bpc 3.409  val_acc 0.311  (24s)
+  [dense] ep   5  train_bpc 2.356  val_bpc 2.640  val_acc 0.454  (118s)
+  [dense] ep  10  train_bpc 1.989  val_bpc 2.593  val_acc 0.481  (277s)
+  [dense] ep  15  train_bpc 1.780  val_bpc 2.666  val_acc 0.481  (426s)
+  [dense] ep  20  train_bpc 1.605  val_bpc 2.829  val_acc 0.477  (560s)
+
+=== MoE Transformer (matched params, top-2 of 4 experts) ===
+params: 698,449 (~50% FFN compute per token vs dense)
+  [moe] ep   1  train_bpc 3.717  val_bpc 3.500  val_acc 0.292  (53s)
+  [moe] ep   5  train_bpc 2.334  val_bpc 2.643  val_acc 0.458  (270s)
+  [moe] ep  10  train_bpc 1.969  val_bpc 2.560  val_acc 0.486  (541s)
+  [moe] ep  15  train_bpc 1.754  val_bpc 2.650  val_acc 0.483  (805s)
+  [moe] ep  20  train_bpc 1.573  val_bpc 2.839  val_acc 0.478  (1054s)
+
+=== MoE Transformer (more experts, top-2 of 8) ===
+params: 702,561 (top-2 of 8 = 25% FFN compute per token)
+  [moe8] ep   1  train_bpc 3.711  val_bpc 3.477  val_acc 0.294  (47s)
+  [moe8] ep   5  train_bpc 2.317  val_bpc 2.612  val_acc 0.464  (200s)
+  [moe8] ep  10  train_bpc 1.954  val_bpc 2.567  val_acc 0.489  (411s)
+  [moe8] ep  15  train_bpc 1.742  val_bpc 2.663  val_acc 0.489  (646s)
+  [moe8] ep  20  train_bpc 1.568  val_bpc 2.855  val_acc 0.478  (884s)
+
+=== SUMMARY (Shakespeare seq=128, 20 epochs) ===
+model                    params   val_bpc   val_acc    time
+dense                   694,849     2.593     0.481    560s
+MoE 4exp top-2          698,449     2.560     0.486   1054s
+MoE 8exp top-2          702,561     2.567     0.489    884s
+
+=== INTERPRETATION ===
+  MoE 4exp vs dense: -0.033 BPC  (sparse wins)
+  MoE 8exp vs dense: -0.026 BPC  (sparse wins)
+  (matched params; MoE has lower active compute per token)
