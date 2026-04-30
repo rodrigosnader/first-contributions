@@ -1,0 +1,40 @@
+
+=== nano Transformer (vanilla causal self-attention) ===
+params: 711,233
+  [transformer] ep   1  train_bpc 3.721  val_bpc 3.549  val_acc 0.275  (36s)
+  [transformer] ep   5  train_bpc 2.377  val_bpc 2.599  val_acc 0.464  (157s)
+  [transformer] ep  10  train_bpc 1.981  val_bpc 2.449  val_acc 0.504  (313s)
+  [transformer] ep  15  train_bpc 1.802  val_bpc 2.457  val_acc 0.512  (474s)
+  [transformer] ep  20  train_bpc 1.674  val_bpc 2.513  val_acc 0.511  (640s)
+  [transformer] ep  25  train_bpc 1.573  val_bpc 2.597  val_acc 0.510  (814s)
+
+=== Hierarchical LM (LSTM compress + local attn + chunk attn) ===
+params: 777,025
+  [hierarchical] ep   1  train_bpc 3.666  val_bpc 3.357  val_acc 0.320  (47s)
+  [hierarchical] ep   5  train_bpc 2.270  val_bpc 2.532  val_acc 0.479  (224s)
+  [hierarchical] ep  10  train_bpc 1.936  val_bpc 2.476  val_acc 0.501  (671s)
+  [hierarchical] ep  15  train_bpc 1.742  val_bpc 2.577  val_acc 0.498  (1139s)
+  [hierarchical] ep  20  train_bpc 1.593  val_bpc 2.715  val_acc 0.495  (1552s)
+  [hierarchical] ep  25  train_bpc 1.477  val_bpc 2.874  val_acc 0.488  (1942s)
+
+=== SUMMARY (Shakespeare seq=256, ~700k params, 25 epochs) ===
+model                      params   val_bpc   val_acc    time
+nano transformer          711,233     2.449     0.512    814s
+hierarchical              777,025     2.476     0.501   1942s
+
+hierarchical - transformer val_bpc delta: +0.026
+  (transformer wins)
+
+=== inference speed (batch=1, single thread, gen 256 tokens) ===
+Traceback (most recent call last):
+  File "/home/user/first-contributions/tlm/experiments/exp30_hierarchical_ssm_attention.py", line 255, in <module>
+    main()
+  File "/home/user/first-contributions/tlm/experiments/exp30_hierarchical_ssm_attention.py", line 245, in main
+    m.generate(prompt, n_gen, temperature=1.0)
+  File "/usr/local/lib/python3.11/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/first-contributions/tlm/experiments/exp22_transformer.py", line 108, in generate
+    logits, _ = self(ctx)
+    ^^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
